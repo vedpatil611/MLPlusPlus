@@ -1,0 +1,10 @@
+bin/
+intermediate/
+.vs/
+
+*.sln
+*.vcxproj
+*.user
+*.filters
+
+Makefile
