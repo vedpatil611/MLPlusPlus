@@ -7,3 +7,6 @@
 [submodule "Dependencies/rapidcsv"]
 	path = Dependencies/rapidcsv
 	url = https://github.com/d99kris/rapidcsv
+[submodule "Dependencies/imgui-filebrowser"]
+	path = Dependencies/imgui-filebrowser
+	url = https://github.com/AirGuanZ/imgui-filebrowser

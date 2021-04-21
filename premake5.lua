@@ -19,6 +19,7 @@ IncludeDirs["GLAD"] = "Dependencies/GLAD/include"
 IncludeDirs["GLFW"] = "Dependencies/glfw/include"
 IncludeDirs["GLM"] = "Dependencies/glm"
 IncludeDirs["ImGui"] = "Dependencies/ImGui/src"
+IncludeDirs["ImFileBrowser"] = "Dependencies/imgui-filebrowser"
 IncludeDirs["RapidCSV"] = "Dependencies/rapidcsv/src"
 
 project "MLPlusPlus"
@@ -37,6 +38,7 @@ project "MLPlusPlus"
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.ImFileBrowser}",
 		"%{IncludeDirs.RapidCSV}"
 	}
 
@@ -49,6 +51,8 @@ project "MLPlusPlus"
 	files { 
 		"%{prj.name}/src/**.h", 
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/UI/**.h",
+		"%{prj.name}/src/UI/**.cpp"
 	}
 
 	filter "system:windows"
