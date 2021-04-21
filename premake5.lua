@@ -19,6 +19,7 @@ IncludeDirs["GLAD"] = "Dependencies/GLAD/include"
 IncludeDirs["GLFW"] = "Dependencies/glfw/include"
 IncludeDirs["GLM"] = "Dependencies/glm"
 IncludeDirs["ImGui"] = "Dependencies/ImGui/src"
+IncludeDirs["RapidCSV"] = "Dependencies/rapidcsv/src"
 
 project "MLPlusPlus"
 	location "MLPlusPlus"
@@ -35,7 +36,8 @@ project "MLPlusPlus"
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLM}",
-		"%{IncludeDirs.ImGui}"
+		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.RapidCSV}"
 	}
 
 	links {
