@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Window.h"
+#include "Algorithms/LinearRegression.h"
 #include "UI/DockableWindow.h"
 
 static ImGui::FileBrowser fileDialog;
@@ -14,8 +15,6 @@ void PropertyPanel();
 int main()
 {
 	Window window;
-	
-	
 
 	DockableWindow::init(&window);
 
@@ -43,16 +42,17 @@ void PropertyPanel()
 	static char selectedFile[256] = "null";
 	static bool fileSelection = false;
 	
-
 	ImGui::Begin("Property");
 
 	ImGui::Text("Train dataset");
 
-	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f);
-	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-	ImGui::Text(selectedFile);
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar();
+	//ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f);
+	//ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//ImGui::Text(selectedFile);
+	ImGui::InputText("", selectedFile, 256, ImGuiInputTextFlags_ReadOnly);
+
+	//ImGui::PopStyleColor();
+	//ImGui::PopStyleVar();
 
 	if (ImGui::Button("Select File"))
 	{
@@ -68,13 +68,20 @@ void PropertyPanel()
 			strcpy(selectedFile, fileDialog.GetSelected().string().c_str());
 
 			rapidcsv::Document doc(selectedFile);
-			std::vector<float>& x_col = doc.GetColumn<float>("x");
-			std::vector<float>& y_col = doc.GetColumn<float>("y");
+			std::vector<double>& x = doc.GetColumn<double>("x");
+			std::vector<double>& y = doc.GetColumn<double>("y");
 
-			for (int i = 0; i < x_col.size() && i < y_col.size(); ++i)
+			LinearRegression lr(0.0001f, 1000);
+			lr.train(x, y);
+
+			rapidcsv::Document testDoc("dataset/test.csv");
+			auto& td = testDoc.GetColumn<double>("x");
+			auto r = lr.predict(td);
+			for (unsigned int i = 0; i < r.size() ; ++i)
 			{
-				printf("%f\t%f\n", x_col[i], y_col[i]);
+				printf("%f\n", r[i]);
 			}
+
 			fileSelection = false;
 		}
 	}
