@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <vector>
 
-#include "Window.h"
 #include "Algorithms/LinearRegression.h"
+#include "Plotter/Shader.h"
 #include "UI/DockableWindow.h"
+#include "Window.h"
 
 static ImGui::FileBrowser fileDialog;
 
@@ -20,6 +21,8 @@ int main()
 
 	fileDialog.SetTitle("Select File");
 	fileDialog.SetTypeFilters({ ".csv" });
+
+	Shader pointShader("Shaders/Point.vert.glsl", "Shaders/Point.frag.glsl");
 
 	while (!window.shouldClose())
 	{
