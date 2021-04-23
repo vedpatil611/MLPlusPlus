@@ -51,8 +51,12 @@ project "MLPlusPlus"
 	files { 
 		"%{prj.name}/src/**.h", 
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/Algorithms/**.h",
+		"%{prj.name}/src/Algorithms/**.cpp",
 		"%{prj.name}/src/UI/**.h",
-		"%{prj.name}/src/UI/**.cpp"
+		"%{prj.name}/src/UI/**.cpp",
+		"%{prj.name}/src/Utils/**.h",
+		"%{prj.name}/src/Utils/**.cpp",
 	}
 
 	filter "system:windows"

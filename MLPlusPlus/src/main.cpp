@@ -50,7 +50,6 @@ void PropertyPanel()
 	//ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 	//ImGui::Text(selectedFile);
 	ImGui::InputText("", selectedFile, 256, ImGuiInputTextFlags_ReadOnly);
-
 	//ImGui::PopStyleColor();
 	//ImGui::PopStyleVar();
 
