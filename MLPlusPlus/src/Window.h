@@ -9,8 +9,8 @@ private:
 	bool m_Keys[1024] = { 0 };
 	int m_BufferWidth, m_BufferHeight;
 	glm::mat4 m_Proj;
-	const float WIDTH = 1280.0f;
-	const float HEIGHT = 720.0f;
+	const float WIDTH = 1920.0f;
+	const float HEIGHT = 1080.0f;
 public:
 	Window();
 	~Window();
@@ -29,6 +29,7 @@ public:
 	glm::mat4 getProjMatrix() const { return m_Proj; }
 
 	void setShouldClose(bool v);
+	void setProjCoords(float left, float right, float bottom, float up);
 
 	static void keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods);
 	static void mouseKeyCallback(GLFWwindow* window, int key, int action, int mods);

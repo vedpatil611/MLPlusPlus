@@ -57,6 +57,7 @@ project "MLPlusPlus"
 		"%{prj.name}/src/UI/**.cpp",
 		"%{prj.name}/src/Utils/**.h",
 		"%{prj.name}/src/Utils/**.cpp",
+		"%{prj.name}/Shaders/**.glsl",
 	}
 
 	filter "system:windows"

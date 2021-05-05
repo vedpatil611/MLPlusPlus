@@ -1,3 +1,4 @@
+#include <glm/glm.hpp>
 #include <ImGui/imgui.h>
 #include <imfilebrowser.h>
 #include <rapidcsv.h>
@@ -6,39 +7,51 @@
 
 #include "Algorithms/LinearRegression.h"
 #include "Plotter/Shader.h"
+#include "Plotter/PointRenderer.h"
 #include "UI/DockableWindow.h"
 #include "Window.h"
 
+#define PROPERTY(x, y) if(x != nullptr) x -> y
+
+Window* window;
 static ImGui::FileBrowser fileDialog;
 LinearRegression* lr;
+PointRenderer* pointRenderer;
 
 void PropertyPanel();
+void plotPoints();
 
 int main()
 {
-	Window window;
+	window = new Window();
 
-	DockableWindow::init(&window);
+	DockableWindow::init(window);
 
 	fileDialog.SetTitle("Select File");
 	fileDialog.SetTypeFilters({ ".csv" });
 
 	Shader pointShader("Shaders/Point.vert.glsl", "Shaders/Point.frag.glsl");
+	pointRenderer = new PointRenderer(&pointShader);
 
-	while (!window.shouldClose())
+	while (!window->shouldClose())
 	{
-		window.pollInput();
-		window.clearBuffer();
+		window->pollInput();
+		window->clearBuffer();
 
 		DockableWindow::begin();
 		PropertyPanel();
 		DockableWindow::end();
 
-		window.swapBuffer();
+		pointShader.bind();
+		pointRenderer->draw(window, 0.0f);
+
+		window->swapBuffer();
 	}
 
+	delete pointRenderer;
 	delete lr;
 	DockableWindow::destroy();
+	delete window;
 	return 0;
 }
 
@@ -56,6 +69,7 @@ void PropertyPanel()
 	static bool fileSelection = false;
 	static bool testFileSelection = false;
 	static std::vector<double> x, y;
+	static std::vector<double> xp, res;
 	static rapidcsv::Document doc; 
 
 	ImGui::Begin("Property");
@@ -111,7 +125,22 @@ void PropertyPanel()
 
 	if (ImGui::Button("Plot Graph"))
 	{
+		pointRenderer->begin();
 
+		double xMin, yMin, xMax, yMax;
+		xMin = xMax = xp[0];
+		yMin = yMax = res[0];
+		for (int i = 0; i < xp.size(); ++i)
+		{
+			pointRenderer->submit(xp[i], res[i], { 1.0f, 0.0f, 0.0f, 1.0f });
+
+			if (xMin > xp[i])	xMin = xp[i];
+			if (yMin > res[i])	yMin = res[i];
+			if (xMax < xp[i])	xMax = xp[i];
+			if (yMax < res[i])	yMax = res[i];
+		}
+		window->setProjCoords(xMin - 20, xMax + 20, yMin - 20, yMax + 20);
+		pointRenderer->end();
 	}
 
 	ImGui::Text("Prediction dataset");
@@ -133,8 +162,8 @@ void PropertyPanel()
 	
 	if (ImGui::Button("Predict"))
 	{
-		auto xp = doc.GetColumn<double>(xLabelTest);
-		auto res = lr->predict(xp);
+		xp = doc.GetColumn<double>(xLabelTest);
+		res = lr->predict(xp);
 		for (int i = 0; i < xp.size(); ++i)
 			printf("%f\t%f\n", xp[i], res[i]);
 	}
@@ -162,4 +191,9 @@ void PropertyPanel()
 	}
 
 	ImGui::End();
+}
+
+void plotPoints()
+{
+	std::vector<glm::vec2> points;
 }

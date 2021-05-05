@@ -10,7 +10,7 @@ Window::Window()
 	if (!glfwInit())
 		throw std::runtime_error("Failed to init glfw");
 
-	m_Window = glfwCreateWindow(1280, 720, "ML++", nullptr, nullptr);
+	m_Window = glfwCreateWindow(1920, 1080, "ML++", nullptr, nullptr);
 	if (!m_Window)
 	{
 		glfwTerminate();
@@ -27,7 +27,7 @@ Window::Window()
 		throw std::runtime_error("Failed to init open gl");
 	}
 
-	m_Proj = glm::ortho(-640, 640, -360, 360, -10, 10);
+	m_Proj = glm::ortho(-WIDTH / 2, WIDTH / 2, -HEIGHT / 2, HEIGHT / 2, -10.0f, 10.0f);
 
 	glfwSetKeyCallback(m_Window, &Window::keyCallback);
 	glfwSetMouseButtonCallback(m_Window, &Window::mouseKeyCallback);
@@ -64,6 +64,11 @@ bool Window::shouldClose() const
 void Window::setShouldClose(bool v)
 {
 	glfwSetWindowShouldClose(m_Window, v);
+}
+
+void Window::setProjCoords(float left, float right, float bottom, float up)
+{
+	m_Proj = glm::ortho(left, right, bottom, up, -10.0f, 10.0f);
 }
 
 void Window::keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods)
