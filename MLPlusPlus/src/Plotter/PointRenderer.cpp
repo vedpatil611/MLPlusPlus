@@ -48,8 +48,8 @@ void PointRenderer::begin()
 
 void PointRenderer::submit(double x, double y, glm::vec4 colour)
 {
-	pointData->x = x;
-	pointData->y = y;
+	pointData->x = static_cast<float>(x);
+	pointData->y = static_cast<float>(y);
 	pointData->colour = colour;
 	++pointData;
 	

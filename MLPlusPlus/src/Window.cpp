@@ -66,9 +66,9 @@ void Window::setShouldClose(bool v)
 	glfwSetWindowShouldClose(m_Window, v);
 }
 
-void Window::setProjCoords(float left, float right, float bottom, float up)
+void Window::setProjCoords(double left, double right, double bottom, double up)
 {
-	m_Proj = glm::ortho(left, right, bottom, up, -10.0f, 10.0f);
+	m_Proj = glm::ortho(left, right, bottom, up, -10.0, 10.0);
 }
 
 void Window::keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods)

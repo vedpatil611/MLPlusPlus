@@ -29,7 +29,7 @@ public:
 	glm::mat4 getProjMatrix() const { return m_Proj; }
 
 	void setShouldClose(bool v);
-	void setProjCoords(float left, float right, float bottom, float up);
+	void setProjCoords(double left, double right, double bottom, double up);
 
 	static void keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods);
 	static void mouseKeyCallback(GLFWwindow* window, int key, int action, int mods);

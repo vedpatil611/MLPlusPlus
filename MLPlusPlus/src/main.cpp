@@ -123,26 +123,6 @@ void PropertyPanel()
 		lr->train(x, y);
 	}
 
-	if (ImGui::Button("Plot Graph"))
-	{
-		pointRenderer->begin();
-
-		double xMin, yMin, xMax, yMax;
-		xMin = xMax = xp[0];
-		yMin = yMax = res[0];
-		for (int i = 0; i < xp.size(); ++i)
-		{
-			pointRenderer->submit(xp[i], res[i], { 1.0f, 0.0f, 0.0f, 1.0f });
-
-			if (xMin > xp[i])	xMin = xp[i];
-			if (yMin > res[i])	yMin = res[i];
-			if (xMax < xp[i])	xMax = xp[i];
-			if (yMax < res[i])	yMax = res[i];
-		}
-		window->setProjCoords(xMin - 20, xMax + 20, yMin - 20, yMax + 20);
-		pointRenderer->end();
-	}
-
 	ImGui::Text("Prediction dataset");
 	ImGui::PushItemWidth(-1);
 	ImGui::InputText("SelectFileP", selectedFileTest, 256, ImGuiInputTextFlags_ReadOnly);
@@ -166,6 +146,26 @@ void PropertyPanel()
 		res = lr->predict(xp);
 		for (int i = 0; i < xp.size(); ++i)
 			printf("%f\t%f\n", xp[i], res[i]);
+	}
+
+	if (ImGui::Button("Plot Graph"))
+	{
+		pointRenderer->begin();
+
+		double xMin, yMin, xMax, yMax;
+		xMin = xMax = xp[0];
+		yMin = yMax = res[0];
+		for (int i = 0; i < xp.size(); ++i)
+		{
+			pointRenderer->submit(xp[i], res[i], { 1.0f, 0.0f, 0.0f, 1.0f });
+
+			if (xMin > xp[i])	xMin = xp[i];
+			if (yMin > res[i])	yMin = res[i];
+			if (xMax < xp[i])	xMax = xp[i];
+			if (yMax < res[i])	yMax = res[i];
+		}
+		pointRenderer->end();
+		window->setProjCoords(xMin - 20, xMax + 20, yMin - 20, yMax + 20);
 	}
 
 	// file browser 
