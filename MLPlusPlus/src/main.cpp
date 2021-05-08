@@ -5,11 +5,12 @@
 #include <stdio.h>
 #include <vector>
 
-#include "Algorithms/LinearRegression.h"
-#include "Plotter/Shader.h"
-#include "Plotter/PointRenderer.h"
-#include "UI/DockableWindow.h"
-#include "Window.h"
+#include <Algorithms/LinearRegression.h>
+#include <Plotter/Shader.h>
+#include <Plotter/LineRenderer.h>
+#include <Plotter/PointRenderer.h>
+#include <UI/DockableWindow.h>
+#include <Window.h>
 
 #define PROPERTY(x, y) if(x != nullptr) x -> y
 
@@ -17,6 +18,7 @@ Window* window;
 static ImGui::FileBrowser fileDialog;
 LinearRegression* lr;
 PointRenderer* pointRenderer;
+LineRenderer* lineRenderer;
 
 void PropertyPanel();
 void plotPoints();
@@ -32,18 +34,19 @@ int main()
 
 	Shader pointShader("Shaders/Point.vert.glsl", "Shaders/Point.frag.glsl");
 	pointRenderer = new PointRenderer(&pointShader);
+	lineRenderer = new LineRenderer(&pointShader);
 
 	while (!window->shouldClose())
 	{
 		window->pollInput();
 		window->clearBuffer();
 
+		lineRenderer->draw(window, 0.0f);
+		pointRenderer->draw(window, 0.0f);
+		
 		DockableWindow::begin();
 		PropertyPanel();
 		DockableWindow::end();
-
-		pointShader.bind();
-		pointRenderer->draw(window, 0.0f);
 
 		window->swapBuffer();
 	}
@@ -155,9 +158,9 @@ void PropertyPanel()
 		double xMin, yMin, xMax, yMax;
 		xMin = xMax = xp[0];
 		yMin = yMax = res[0];
-		for (int i = 0; i < xp.size(); ++i)
+		for (int i = 0; i < 300; ++i)
 		{
-			pointRenderer->submit(xp[i], res[i], { 1.0f, 0.0f, 0.0f, 1.0f });
+			pointRenderer->submit(xp[i], res[i], { 0.0f, 1.0f, 0.0f, 1.0f });
 
 			if (xMin > xp[i])	xMin = xp[i];
 			if (yMin > res[i])	yMin = res[i];
@@ -165,6 +168,13 @@ void PropertyPanel()
 			if (yMax < res[i])	yMax = res[i];
 		}
 		pointRenderer->end();
+		
+		lineRenderer->begin();
+		lineRenderer->submit(xMin - 30.0, 0.0, xMax + 30.0, 0.0, { 1.0f, 0.0f, 0.0f, 1.0f });
+		lineRenderer->submit(0.0, yMin - 30.0, 0.0, yMax + 30.0, { 0.0f, 0.0f, 1.0f, 1.0f });
+		lineRenderer->submit(xMin - 30.0, lr->getY(xMin - 30.0), xMax + 30.0, lr->getY(xMax + 30.0), { 0.8f, 0.0f, 0.8f, 1.0f });
+		lineRenderer->end();
+
 		window->setProjCoords(xMin - 20, xMax + 20, yMin - 20, yMax + 20);
 	}
 

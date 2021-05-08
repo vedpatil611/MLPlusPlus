@@ -4,6 +4,8 @@
 #include <Plotter/Shader.h>
 #include <Window.h>
 
+#define VERTEX_OFFSET(offset) (const void*) ((offset) * sizeof(double))
+
 PointRenderer::PointRenderer(Shader* shader)
 	:shader(shader)
 {
@@ -14,7 +16,7 @@ PointRenderer::PointRenderer(Shader* shader)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, POINTS_BUFFER_SIZE, nullptr, GL_DYNAMIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, false, POINT_VERTEX_SIZE, VERTEX_OFFSET(0));
+	glVertexAttribPointer(0, 2, GL_DOUBLE, false, POINT_VERTEX_SIZE, VERTEX_OFFSET(0));
 	glVertexAttribPointer(1, 4, GL_FLOAT, false, POINT_VERTEX_SIZE, VERTEX_OFFSET(2));
 
 	glEnableVertexAttribArray(0);
@@ -48,8 +50,8 @@ void PointRenderer::begin()
 
 void PointRenderer::submit(double x, double y, glm::vec4 colour)
 {
-	pointData->x = static_cast<float>(x);
-	pointData->y = static_cast<float>(y);
+	pointData->x = x;
+	pointData->y = y;
 	pointData->colour = colour;
 	++pointData;
 	
@@ -64,7 +66,9 @@ void PointRenderer::draw(Window* window, float delta)
 	shader->bind();
 	shader->setUniformMat4("uProj", window->getProjMatrix());
 
+	glPointSize(3.0f);
 	glDrawElements(GL_POINTS, indexCount, GL_UNSIGNED_SHORT, nullptr);
+	glPointSize(1.0f);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

@@ -4,12 +4,10 @@
 #include <Plotter/Points.h>
 #include <vector>
 
-#define MAX_POINTS			1000
+#define MAX_POINTS			10000
 #define POINT_VERTEX_SIZE	sizeof(PointData)
-#define POINTS_SIZE			POINT_VERTEX_SIZE * 2
+#define POINTS_SIZE			POINT_VERTEX_SIZE * 1
 #define POINTS_BUFFER_SIZE	POINTS_SIZE * MAX_POINTS
-
-#define VERTEX_OFFSET(offset) (const void*) ((offset) * sizeof(float))
 
 class PointRenderer
 {

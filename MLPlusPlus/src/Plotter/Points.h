@@ -5,7 +5,7 @@
 
 struct PointData
 {
-	float x;
-	float y;
+	double x;
+	double y;
 	glm::vec4 colour;
 };
