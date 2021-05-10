@@ -1,15 +1,17 @@
 #include <glm/glm.hpp>
-#include <ImGui/imgui.h>
+#include <imgui.h>
 #include <imfilebrowser.h>
 #include <rapidcsv.h>
 #include <stdio.h>
 #include <vector>
 
 #include <Algorithms/LinearRegression.h>
+#include <NodeEditor/NodeEditor.h>
 #include <Plotter/Shader.h>
 #include <Plotter/LineRenderer.h>
 #include <Plotter/PointRenderer.h>
 #include <UI/DockableWindow.h>
+#include <vendors/imnodes/imnodes.h>
 #include <Window.h>
 
 #define PROPERTY(x, y) if(x != nullptr) x -> y
@@ -28,6 +30,7 @@ int main()
 	window = new Window();
 
 	DockableWindow::init(window);
+	NodeEditor::init();
 
 	fileDialog.SetTitle("Select File");
 	fileDialog.SetTypeFilters({ ".csv" });
@@ -46,6 +49,16 @@ int main()
 		
 		DockableWindow::begin();
 		PropertyPanel();
+
+		ImGui::Begin("Node Editor");
+		ImNodes::BeginNodeEditor();
+
+		NodeEditor::spawnMain();
+		//NodeEditor::spawnNewLinearRegression();
+
+		ImNodes::EndNodeEditor();
+		ImGui::End();
+
 		DockableWindow::end();
 
 		window->swapBuffer();
@@ -53,6 +66,7 @@ int main()
 
 	delete pointRenderer;
 	delete lr;
+	NodeEditor::destroy();
 	DockableWindow::destroy();
 	delete window;
 	return 0;

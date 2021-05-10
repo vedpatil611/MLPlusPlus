@@ -18,7 +18,7 @@ IncludeDirs = {}
 IncludeDirs["GLAD"] = "Dependencies/GLAD/include"
 IncludeDirs["GLFW"] = "Dependencies/glfw/include"
 IncludeDirs["GLM"] = "Dependencies/glm"
-IncludeDirs["ImGui"] = "Dependencies/ImGui/src"
+IncludeDirs["ImGui"] = "Dependencies/ImGui/src/ImGui"
 IncludeDirs["ImFileBrowser"] = "Dependencies/imgui-filebrowser"
 IncludeDirs["RapidCSV"] = "Dependencies/rapidcsv/src"
 
@@ -34,11 +34,13 @@ project "MLPlusPlus"
 
 	includedirs {
 		"%{prj.name}/src/",
+		"%{prj.name}/src/vendors",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.ImFileBrowser}",
+		"%{IncludeDirs.ImGuiNodeEditor}",
 		"%{IncludeDirs.RapidCSV}"
 	}
 
@@ -53,10 +55,14 @@ project "MLPlusPlus"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/Algorithms/**.h",
 		"%{prj.name}/src/Algorithms/**.cpp",
+		"%{prj.name}/src/Plotter/**.h",
+		"%{prj.name}/src/Plotter/**.cpp",
 		"%{prj.name}/src/UI/**.h",
 		"%{prj.name}/src/UI/**.cpp",
 		"%{prj.name}/src/Utils/**.h",
 		"%{prj.name}/src/Utils/**.cpp",
+		"%{prj.name}/src/vendors/imnodes/**.h",
+		"%{prj.name}/src/vendors/imnodes/**.cpp",
 		"%{prj.name}/Shaders/**.glsl",
 	}
 
