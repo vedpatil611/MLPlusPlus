@@ -10,7 +10,7 @@ class NodeEditor {
 public:
 	using Iterator = std::vector<Nodes::Node*>::iterator;
 private:
-	unsigned int id = 0;
+	unsigned int id = 1;
 	std::vector<Nodes::Node*> nodes;
 	std::vector<Nodes::Link*> links;
 public:
@@ -26,4 +26,5 @@ public:
 
 	void addLink(Nodes::Link* link);
 	inline std::vector<Nodes::Link*>& getLinks() { return links; }
+	inline std::vector<Nodes::Node*>& getNodes() { return nodes; }
 };

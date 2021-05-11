@@ -73,6 +73,12 @@ void Window::setProjCoords(double left, double right, double bottom, double up)
 
 void Window::keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods)
 {
+	Window* window = static_cast<Window*>(glfwGetWindowUserPointer(m_Window));
+
+	if (action == GLFW_PRESS)
+		window->m_Keys[key] = true;
+	if (action == GLFW_RELEASE)
+		window->m_Keys[key] = false;
 }
 
 void Window::mouseKeyCallback(GLFWwindow* window, int key, int action, int mods)

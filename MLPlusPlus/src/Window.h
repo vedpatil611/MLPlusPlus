@@ -6,7 +6,7 @@ class Window
 {
 private:
 	struct GLFWwindow* m_Window;
-	bool m_Keys[1024] = { 0 };
+	bool m_Keys[512] = { 0 };
 	int m_BufferWidth, m_BufferHeight;
 	glm::mat4 m_Proj;
 	const float WIDTH = 1920.0f;

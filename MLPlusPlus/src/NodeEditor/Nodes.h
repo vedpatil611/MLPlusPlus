@@ -7,11 +7,11 @@ namespace Nodes
 {
 	class Node 
 	{
-	protected:
+	public:
 		int start_id;
 		Node(int id) : start_id(id) {}
-	public:
 		virtual void show() = 0;
+		virtual int lastIdOffset() const = 0;
 	};
 
 	class Main: public Node
@@ -19,6 +19,7 @@ namespace Nodes
 	public:
 		Main(int id);
 		void show() override;
+		int lastIdOffset() const override;
 		static inline constexpr int getIdIncreament() { return 2; }
 	};
 
@@ -27,6 +28,7 @@ namespace Nodes
 	public:
 		LinearRegression(int id);
 		void show() override;
+		int lastIdOffset() const override;
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
 
@@ -35,6 +37,7 @@ namespace Nodes
 	public:
 		LR_SetLearningRate(int id);
 		void show() override;
+		int lastIdOffset() const override;
 		static inline constexpr int getIdIncreament() { return 5; }
 	};
 }

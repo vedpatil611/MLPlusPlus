@@ -1,81 +1,98 @@
 #include "Nodes.h"
 
-Nodes::Main::Main(int id)
-	:Node(id) {}
-
-void Nodes::Main::show()
+namespace Nodes
 {
-	ImNodes::BeginNode(start_id);
+	Main::Main(int id)
+		:Node(id) {}
 
-	ImNodes::BeginNodeTitleBar();
-	ImGui::TextUnformatted("Main");
-	ImNodes::EndNodeTitleBar();
+	void Main::show()
+	{
+		int id = start_id;
+		ImNodes::BeginNode(id++);
 
-	ImNodes::BeginOutputAttribute(start_id + 1);
-	ImGui::Text("Start");
-	ImNodes::EndOutputAttribute();
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Main");
+		ImNodes::EndNodeTitleBar();
 
-	ImNodes::EndNode();
-}
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Text("Start");
+		ImNodes::EndOutputAttribute();
 
-Nodes::LinearRegression::LinearRegression(int id)
-	:Node(id) {}
+		ImNodes::EndNode();
+	}
 
-void Nodes::LinearRegression::show()
-{
-	int id = start_id;
-	ImNodes::BeginNode(id++);
+	int Main::lastIdOffset() const
+	{
+		return 2;
+	}
 
-	ImNodes::BeginNodeTitleBar();
-	ImGui::TextUnformatted("LinearRegression");
-	ImNodes::EndNodeTitleBar();
+	LinearRegression::LinearRegression(int id)
+		:Node(id) {}
 
-	ImNodes::BeginInputAttribute(id++);
-	ImNodes::EndInputAttribute();
+	void LinearRegression::show()
+	{
+		int id = start_id;
+		ImNodes::BeginNode(id++);
 
-	ImGui::SameLine();
-	ImNodes::BeginOutputAttribute(id++);
-	ImGui::Indent(50);
-	ImNodes::EndOutputAttribute();
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("LinearRegression");
+		ImNodes::EndNodeTitleBar();
 
-	ImGui::NewLine();
-	ImNodes::BeginOutputAttribute(id++);
-	ImGui::Indent(90);
-	ImGui::Text("object");
-	ImNodes::EndOutputAttribute();
+		ImNodes::BeginInputAttribute(id++);
+		ImNodes::EndInputAttribute();
 
-	ImNodes::EndNode();
-}
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(50);
+		ImNodes::EndOutputAttribute();
 
-Nodes::LR_SetLearningRate::LR_SetLearningRate(int id)
-	:Node(id) {}
+		ImGui::NewLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(90);
+		ImGui::Text("object");
+		ImNodes::EndOutputAttribute();
 
-void Nodes::LR_SetLearningRate::show()
-{
-	int id = start_id;
-	ImNodes::BeginNode(id++);
+		ImNodes::EndNode();
+	}
 
-	ImNodes::BeginNodeTitleBar();
-	ImGui::TextUnformatted("Set");
-	ImNodes::EndNodeTitleBar();
+	int LinearRegression::lastIdOffset() const
+	{
+		return 4;
+	}
 
-	ImNodes::BeginInputAttribute(id++);
-	ImNodes::EndOutputAttribute();
+	LR_SetLearningRate::LR_SetLearningRate(int id)
+		:Node(id) {}
 
-	ImNodes::BeginOutputAttribute(id++);
-	ImNodes::EndOutputAttribute();
+	void LR_SetLearningRate::show()
+	{
+		int id = start_id;
+		ImNodes::BeginNode(id++);
 
-	ImGui::NewLine();
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Set");
+		ImNodes::EndNodeTitleBar();
 
-	ImNodes::BeginInputAttribute(id++);
-	ImGui::Text("lr object");
-	ImNodes::EndInputAttribute();
+		ImNodes::BeginInputAttribute(id++);
+		ImNodes::EndOutputAttribute();
 
-	ImGui::SameLine();
-	ImNodes::BeginOutputAttribute(id++);
-	ImGui::Indent(100);
-	ImGui::Text("lr object");
-	ImNodes::EndOutputAttribute();
+		ImNodes::BeginOutputAttribute(id++);
+		ImNodes::EndOutputAttribute();
 
-	ImNodes::EndNode();
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("lr object");
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(100);
+		ImGui::Text("lr object");
+		ImNodes::EndOutputAttribute();
+
+		ImNodes::EndNode();
+	}
+	int LR_SetLearningRate::lastIdOffset() const
+	{
+		return 5;
+	}
 }

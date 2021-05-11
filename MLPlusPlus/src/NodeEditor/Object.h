@@ -7,6 +7,7 @@ namespace Nodes
 		INT,
 		FLOAT,
 		STRING,
+		BOOL,
 		LINEAR_REGRESSION_MODEL
 	};
 
@@ -15,5 +16,9 @@ namespace Nodes
 	public:
 		DataType type;
 		void* object;
+
+		Object();
+		Object(DataType type, void* object);
+		~Object();
 	};
 }

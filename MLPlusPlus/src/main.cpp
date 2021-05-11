@@ -1,4 +1,4 @@
-#include <Core.h>
+#include <algorithm>
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <imfilebrowser.h>
@@ -25,6 +25,7 @@ LineRenderer* lineRenderer;
 
 void PropertyPanel();
 void ShowNodeEditor();
+void Variables();
 
 int main()
 {
@@ -258,6 +259,62 @@ void ShowNodeEditor()
 			});
 			assert(iter != links.end());
 			links.erase(iter);
+		}
+	}
+
+	if (window->getKeys()[261]) 
+	{
+		int nodes[128] = { 0 };
+		ImNodes::GetSelectedNodes(nodes);
+		auto& ns = nodeEditor->getNodes();
+
+		for (auto& x = ns.begin(); x < ns.end(); ++x)
+		{
+			auto it = std::find(nodes, nodes + 128, (*x)->start_id);
+			if (it < nodes + 128)
+			{
+				if(x == ns.end() - 1)
+				{
+					ns.erase(x);
+					break;
+				}
+				ns.erase(x);
+				if (ns.empty()) break;
+			}
+		}
+
+		int links[128] = { 0 };
+		ImNodes::GetSelectedLinks(links);
+		auto& ls = nodeEditor->getLinks();
+
+		for (auto x = ls.begin(); x < ls.end(); ++x)
+		{
+			auto it = std::find(links, links + 128, (*x)->id);
+			if (it < links + 128)
+			{
+				if (x == ls.end() - 1)
+				{
+					ls.erase(x);
+					break;
+				}
+				ls.erase(x);
+				if (ls.empty()) break;
+			}
+		}
+	}
+
+	ImGui::End();
+}
+
+void Variables()
+{
+	ImGui::Begin("Variables");
+
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::MenuItem("Add Variable"))
+		{
+			
 		}
 	}
 
