@@ -14,11 +14,13 @@ namespace Nodes
 	class Object 
 	{
 	public:
-		DataType type;
 		void* object;
+		DataType type;
+		char name[64] = "";
+		bool isSelected;
 
 		Object();
-		Object(DataType type, void* object);
+		Object(DataType type, void* object, bool selected = false);
 		~Object();
 	};
 }

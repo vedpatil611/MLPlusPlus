@@ -1,6 +1,10 @@
 #include "NodeEditor.h"
 
-NodeEditor::NodeEditor()
+#include <string>
+#include <Window.h>
+
+NodeEditor::NodeEditor(Window* window)
+	:window(window)
 {
 	ImNodes::CreateContext();
 }
@@ -23,6 +27,137 @@ NodeEditor::Iterator NodeEditor::begin()
 NodeEditor::Iterator NodeEditor::end()
 {
 	return nodes.end();
+}
+
+void NodeEditor::renderEditor()
+{
+	ImGui::Begin("Node Editor");
+	ImNodes::BeginNodeEditor();
+
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::BeginMenu("Linear Regression"))
+		{
+			if (ImGui::MenuItem("New"))
+			{
+				spawnNewLinearRegression();
+			}
+			if (ImGui::MenuItem("Set"))
+			{
+				spawnSetLinearRegressionObject();
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	for (auto x : nodes)
+		x->show();
+	for (auto l : links)
+		ImNodes::Link(l->id, l->start_id, l->end_id);
+
+	ImNodes::EndNodeEditor();
+
+	{
+		static int id = 0;
+		int start_id, end_id;
+		if (ImNodes::IsLinkCreated(&start_id, &end_id))
+			addLink(new Nodes::Link(++id, start_id, end_id));
+	}
+
+	{
+		int link_id;
+		if (ImNodes::IsLinkDestroyed(&link_id))
+		{
+			auto iter = std::find_if(links.begin(), links.end(), [link_id](const Nodes::Link* link) -> bool
+				{
+					return link->id == link_id;
+				});
+			assert(iter != links.end());
+			links.erase(iter);
+		}
+	}
+
+	if (window->getKeys()[261])
+	{
+		int ns[128] = { 0 };
+		ImNodes::GetSelectedNodes(ns);
+
+		for (auto& x = nodes.begin(); x < nodes.end(); ++x)
+		{
+			auto it = std::find(ns, ns + 128, (*x)->start_id);
+			if (it < ns + 128)
+			{
+				if (x == nodes.end() - 1)
+				{
+					nodes.erase(x);
+					break;
+				}
+				nodes.erase(x);
+				if (nodes.empty()) break;
+			}
+		}
+
+		int ls[128] = { 0 };
+		ImNodes::GetSelectedLinks(ls);
+
+		for (auto x = links.begin(); x < links.end(); ++x)
+		{
+			auto it = std::find(ls, ls + 128, (*x)->id);
+			if (it < ls + 128)
+			{
+				if (x == links.end() - 1)
+				{
+					links.erase(x);
+					break;
+				}
+				links.erase(x);
+				if (links.empty()) break;
+			}
+		}
+	}
+
+	ImGui::End();
+}
+
+void NodeEditor::renderVariablesPanel()
+{
+	ImGui::Begin("Variables");
+
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::MenuItem("Add Variable"))
+		{
+			objects.emplace_back(new Nodes::Object(Nodes::DataType::FLOAT, nullptr));
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::BeginTable("Var table", 2);
+	ImGui::TableNextColumn();
+	ImGui::TableHeader("Variable Name");
+	ImGui::TableNextColumn();
+	ImGui::TableHeader("Data Type");
+	//ImGui::Text("Varaible Name");
+	//ImGui::Text("DataType");
+
+	char s[8] = "var";
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		sprintf(s, "var%d", i);
+		ImGui::TableNextRow();
+
+		ImGui::TableNextColumn();
+		ImGui::PushItemWidth(-1);
+		ImGui::InputText(s, objects[i]->name, 64);
+
+		ImGui::TableNextColumn();
+		ImGui::Text("Float");
+	}
+	ImGui::EndTable();
+
+	ImGui::End();
 }
 
 void NodeEditor::spawnMain()
