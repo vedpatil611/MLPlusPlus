@@ -1,3 +1,4 @@
+#include <Core.h>
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <imfilebrowser.h>
@@ -14,11 +15,10 @@
 #include <vendors/imnodes/imnodes.h>
 #include <Window.h>
 
-#define PROPERTY(x, y) if(x != nullptr) x -> y
-
 Window* window;
 static ImGui::FileBrowser fileDialog;
 LinearRegression* lr;
+NodeEditor* nodeEditor;
 PointRenderer* pointRenderer;
 LineRenderer* lineRenderer;
 
@@ -30,7 +30,8 @@ int main()
 	window = new Window();
 
 	DockableWindow::init(window);
-	NodeEditor::init();
+	nodeEditor = new NodeEditor();
+	nodeEditor->spawnMain();
 
 	fileDialog.SetTitle("Select File");
 	fileDialog.SetTypeFilters({ ".csv" });
@@ -53,8 +54,8 @@ int main()
 		ImGui::Begin("Node Editor");
 		ImNodes::BeginNodeEditor();
 
-		NodeEditor::spawnMain();
-		//NodeEditor::spawnNewLinearRegression();
+		for (auto x: *nodeEditor)
+			x->show();
 
 		ImNodes::EndNodeEditor();
 		ImGui::End();
@@ -66,7 +67,7 @@ int main()
 
 	delete pointRenderer;
 	delete lr;
-	NodeEditor::destroy();
+	delete nodeEditor;
 	DockableWindow::destroy();
 	delete window;
 	return 0;

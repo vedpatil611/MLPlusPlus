@@ -1,39 +1,37 @@
 #include "NodeEditor.h"
 
-unsigned int NodeEditor::getNextId()
-{
-	return ++id;
-}
-
-void NodeEditor::init()
+NodeEditor::NodeEditor()
 {
 	ImNodes::CreateContext();
-	//ImNodes::SetNodeGridSpacePos(1, ImVec2(200.0f, 200.0f));
 }
 
-void NodeEditor::destroy()
+NodeEditor::~NodeEditor()
 {
+	for (auto* x : nodes)
+		delete x;
+
 	ImNodes::DestroyContext();
+}
+
+NodeEditor::Iterator NodeEditor::begin()
+{
+	return nodes.begin();
+}
+
+NodeEditor::Iterator NodeEditor::end()
+{
+	return nodes.end();
 }
 
 void NodeEditor::spawnMain()
 {
-	ImNodes::BeginNode(1);
-
-	ImNodes::BeginNodeTitleBar();
-	ImGui::TextUnformatted("Main");
-	ImNodes::EndNodeTitleBar();
-
-	ImNodes::BeginOutputAttribute(2);
-	ImGui::Text("Start");
-	ImNodes::EndOutputAttribute();
-
-	ImNodes::EndNode();
+	nodes.emplace_back(new Nodes::Main(id));
+	id += Nodes::Main::getIdIncreament();
 }
 
 void NodeEditor::spawnNewLinearRegression()
 {
-	static char rate[10];
+	/*static char rate[10];
 	static char iter[10];
 	ImNodes::BeginNode(getNextId());
 
@@ -58,5 +56,5 @@ void NodeEditor::spawnNewLinearRegression()
 	ImGui::Text("Start");
 	ImNodes::EndOutputAttribute();
 
-	ImNodes::EndNode();
+	ImNodes::EndNode();*/
 }

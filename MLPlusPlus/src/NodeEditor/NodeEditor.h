@@ -2,15 +2,22 @@
 
 #include <imgui.h>
 #include <imnodes/imnodes.h>
+#include <NodeEditor/Nodes.h>
+#include <vector>
 
 class NodeEditor {
-	inline static unsigned int id = 0;
-	static unsigned int getNextId();
 public:
-	static void init();
+	using Iterator = std::vector<Nodes::Node*>::iterator;
+private:
+	unsigned int id = 0;
+public:
+	std::vector<Nodes::Node*> nodes;
+	NodeEditor();
+	~NodeEditor();
 
-	static void destroy();
+	Iterator begin();
+	Iterator end();
 
-	static void spawnMain();
-	static void spawnNewLinearRegression();
+	void spawnMain();
+	void spawnNewLinearRegression();
 };
