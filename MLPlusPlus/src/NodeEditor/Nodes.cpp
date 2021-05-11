@@ -1,5 +1,7 @@
 #include "Nodes.h"
 
+#include <stdio.h>
+
 namespace Nodes
 {
 	Main::Main(int id)
@@ -19,11 +21,6 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
-	}
-
-	int Main::lastIdOffset() const
-	{
-		return 2;
 	}
 
 	LinearRegression::LinearRegression(int id)
@@ -55,15 +52,13 @@ namespace Nodes
 		ImNodes::EndNode();
 	}
 
-	int LinearRegression::lastIdOffset() const
+	Set::Set(int id)
+		:Node(id) 
 	{
-		return 4;
+		count = ++s_count;
 	}
-
-	LR_SetLearningRate::LR_SetLearningRate(int id)
-		:Node(id) {}
-
-	void LR_SetLearningRate::show()
+	
+	void Set::show()
 	{
 		int id = start_id;
 		ImNodes::BeginNode(id++);
@@ -73,15 +68,21 @@ namespace Nodes
 		ImNodes::EndNodeTitleBar();
 
 		ImNodes::BeginInputAttribute(id++);
-		ImNodes::EndOutputAttribute();
+		ImNodes::EndInputAttribute();
 
 		ImNodes::BeginOutputAttribute(id++);
 		ImNodes::EndOutputAttribute();
 
+		char s[8];
+		sprintf(s, "name%d", count);
 		ImGui::NewLine();
-		ImNodes::BeginInputAttribute(id++);
-		ImGui::Text("lr object");
-		ImNodes::EndInputAttribute();
+		ImNodes::BeginStaticAttribute(id++);
+		ImGui::PushItemWidth(50);
+		ImGui::PushID(ImGui::GetID(s));
+		ImGui::InputText("", name, 16);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+		ImNodes::EndStaticAttribute();
 
 		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
@@ -90,9 +91,5 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
-	}
-	int LR_SetLearningRate::lastIdOffset() const
-	{
-		return 5;
 	}
 }

@@ -42,13 +42,13 @@ void NodeEditor::renderEditor()
 			{
 				spawnNewLinearRegression();
 			}
-			if (ImGui::MenuItem("Set"))
-			{
-				spawnSetLinearRegressionObject();
-			}
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::MenuItem("Set"))
+		{
+			spawnSet();
+		}
 		ImGui::EndPopup();
 	}
 
@@ -84,37 +84,39 @@ void NodeEditor::renderEditor()
 		int ns[128] = { 0 };
 		ImNodes::GetSelectedNodes(ns);
 
-		for (auto& x = nodes.begin(); x < nodes.end(); ++x)
+		for (auto& x = nodes.begin(); x != nodes.end();)
 		{
 			auto it = std::find(ns, ns + 128, (*x)->start_id);
 			if (it < ns + 128)
 			{
 				if (x == nodes.end() - 1)
 				{
-					nodes.erase(x);
+					x = nodes.erase(x);
 					break;
 				}
-				nodes.erase(x);
+				x = nodes.erase(x);
 				if (nodes.empty()) break;
 			}
+			else ++x;
 		}
 
 		int ls[128] = { 0 };
 		ImNodes::GetSelectedLinks(ls);
 
-		for (auto x = links.begin(); x < links.end(); ++x)
+		for (auto x = links.begin(); x < links.end();)
 		{
 			auto it = std::find(ls, ls + 128, (*x)->id);
 			if (it < ls + 128)
 			{
 				if (x == links.end() - 1)
 				{
-					links.erase(x);
+					x = links.erase(x);
 					break;
 				}
-				links.erase(x);
+				x = links.erase(x);
 				if (links.empty()) break;
 			}
+			else ++x;
 		}
 	}
 
@@ -139,8 +141,6 @@ void NodeEditor::renderVariablesPanel()
 	ImGui::TableHeader("Variable Name");
 	ImGui::TableNextColumn();
 	ImGui::TableHeader("Data Type");
-	//ImGui::Text("Varaible Name");
-	//ImGui::Text("DataType");
 
 	char s[8] = "var";
 	for (int i = 0; i < objects.size(); ++i)
@@ -166,16 +166,16 @@ void NodeEditor::spawnMain()
 	id += Nodes::Main::getIdIncreament();
 }
 
+void NodeEditor::spawnSet()
+{
+	nodes.emplace_back(new Nodes::Set(id));
+	id += Nodes::Set::getIdIncreament();
+}
+
 void NodeEditor::spawnNewLinearRegression()
 {
 	nodes.emplace_back(new Nodes::LinearRegression(id));
 	id += Nodes::LinearRegression::getIdIncreament();
-}
-
-void NodeEditor::spawnSetLinearRegressionObject()
-{
-	nodes.emplace_back(new Nodes::LR_SetLearningRate(id));
-	id += Nodes::LR_SetLearningRate::getIdIncreament();
 }
 
 void NodeEditor::addLink(Nodes::Link* link)

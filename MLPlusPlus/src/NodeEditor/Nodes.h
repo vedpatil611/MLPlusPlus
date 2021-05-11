@@ -19,7 +19,7 @@ namespace Nodes
 	public:
 		Main(int id);
 		void show() override;
-		int lastIdOffset() const override;
+		inline int lastIdOffset() const override { return 2; }
 		static inline constexpr int getIdIncreament() { return 2; }
 	};
 
@@ -28,16 +28,20 @@ namespace Nodes
 	public:
 		LinearRegression(int id);
 		void show() override;
-		int lastIdOffset() const override;
+		inline int lastIdOffset() const override { return 4; }
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
 
-	class LR_SetLearningRate : public Node
+	class Set : public Node
 	{
+	private:
+		static inline int s_count = 0;
+		char name[64] = "";
+		int count;
 	public:
-		LR_SetLearningRate(int id);
+		Set(int id);
 		void show() override;
-		int lastIdOffset() const override;
+		inline int lastIdOffset() const override { return 5; }
 		static inline constexpr int getIdIncreament() { return 5; }
 	};
 }

@@ -27,8 +27,8 @@ public:
 	void renderVariablesPanel();
 
 	void spawnMain();
+	void spawnSet();
 	void spawnNewLinearRegression();
-	void spawnSetLinearRegressionObject();
 
 	void addLink(Nodes::Link* link);
 	inline std::vector<Nodes::Link*>& getLinks() { return links; }
