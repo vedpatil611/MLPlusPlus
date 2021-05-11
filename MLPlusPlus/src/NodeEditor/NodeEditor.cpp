@@ -9,6 +9,8 @@ NodeEditor::~NodeEditor()
 {
 	for (auto* x : nodes)
 		delete x;
+	for (auto* x : links)
+		delete x;
 
 	ImNodes::DestroyContext();
 }
@@ -31,30 +33,11 @@ void NodeEditor::spawnMain()
 
 void NodeEditor::spawnNewLinearRegression()
 {
-	/*static char rate[10];
-	static char iter[10];
-	ImNodes::BeginNode(getNextId());
+	nodes.emplace_back(new Nodes::LinearRegression(id));
+	id += Nodes::LinearRegression::getIdIncreament();
+}
 
-	ImNodes::BeginNodeTitleBar();
-	ImGui::TextUnformatted("Linear Regression");
-	ImNodes::EndNodeTitleBar();
-
-	ImNodes::BeginInputAttribute(getNextId());
-	ImGui::InputText("Learning rate", rate, 10);
-	ImNodes::EndInputAttribute();
-
-	ImGui::SameLine();
-	ImNodes::BeginOutputAttribute(getNextId());
-	ImGui::Text("lr object");
-	ImNodes::EndOutputAttribute();
-
-	ImNodes::BeginInputAttribute(getNextId());
-	ImGui::InputText("Iterrations", iter, 10);
-	ImNodes::EndInputAttribute();
-
-	ImNodes::BeginOutputAttribute(getNextId());
-	ImGui::Text("Start");
-	ImNodes::EndOutputAttribute();
-
-	ImNodes::EndNode();*/
+void NodeEditor::addLink(Nodes::Link* link)
+{
+	links.emplace_back(link);
 }

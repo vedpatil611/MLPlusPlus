@@ -55,6 +55,8 @@ project "MLPlusPlus"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/Algorithms/**.h",
 		"%{prj.name}/src/Algorithms/**.cpp",
+		"%{prj.name}/src/NodeEditor/**.h",
+		"%{prj.name}/src/NodeEditor/**.cpp",
 		"%{prj.name}/src/Plotter/**.h",
 		"%{prj.name}/src/Plotter/**.cpp",
 		"%{prj.name}/src/UI/**.h",

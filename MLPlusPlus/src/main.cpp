@@ -8,6 +8,7 @@
 
 #include <Algorithms/LinearRegression.h>
 #include <NodeEditor/NodeEditor.h>
+#include <NodeEditor/NodeLink.h>
 #include <Plotter/Shader.h>
 #include <Plotter/LineRenderer.h>
 #include <Plotter/PointRenderer.h>
@@ -23,7 +24,7 @@ PointRenderer* pointRenderer;
 LineRenderer* lineRenderer;
 
 void PropertyPanel();
-void plotPoints();
+void ShowNodeEditor();
 
 int main()
 {
@@ -50,16 +51,7 @@ int main()
 		
 		DockableWindow::begin();
 		PropertyPanel();
-
-		ImGui::Begin("Node Editor");
-		ImNodes::BeginNodeEditor();
-
-		for (auto x: *nodeEditor)
-			x->show();
-
-		ImNodes::EndNodeEditor();
-		ImGui::End();
-
+		ShowNodeEditor();
 		DockableWindow::end();
 
 		window->swapBuffer();
@@ -218,7 +210,48 @@ void PropertyPanel()
 	ImGui::End();
 }
 
-void plotPoints()
+void ShowNodeEditor()
 {
-	std::vector<glm::vec2> points;
+	static int c_id = 0;
+	ImGui::Begin("Node Editor");
+	ImNodes::BeginNodeEditor();
+
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::MenuItem("Linear Regression"))
+		{
+			nodeEditor->spawnNewLinearRegression();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	for (auto x : *nodeEditor)
+		x->show();
+	for (auto l : nodeEditor->getLinks())
+		ImNodes::Link(l->id, l->start_id, l->end_id);
+
+	ImNodes::EndNodeEditor();
+
+	{
+		int start_id, end_id;
+		if (ImNodes::IsLinkCreated(&start_id, &end_id))
+			nodeEditor->addLink(new Nodes::Link(++c_id, start_id, end_id));
+	}
+
+	{
+		int link_id;
+		if (ImNodes::IsLinkDestroyed(&link_id))
+		{
+			auto& links = nodeEditor->getLinks();
+			auto iter = std::find_if(links.begin(), links.end(), [link_id](const Nodes::Link* link) -> bool 
+			{
+				return link->id == link_id;
+			});
+			assert(iter != links.end());
+			links.erase(iter);
+		}
+	}
+
+	ImGui::End();
 }
