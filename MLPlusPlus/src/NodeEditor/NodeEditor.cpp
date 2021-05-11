@@ -37,6 +37,12 @@ void NodeEditor::spawnNewLinearRegression()
 	id += Nodes::LinearRegression::getIdIncreament();
 }
 
+void NodeEditor::spawnSetLinearRegressionObject()
+{
+	nodes.emplace_back(new Nodes::LR_SetLearningRate(id));
+	id += Nodes::LR_SetLearningRate::getIdIncreament();
+}
+
 void NodeEditor::addLink(Nodes::Link* link)
 {
 	links.emplace_back(link);

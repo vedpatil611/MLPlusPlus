@@ -218,9 +218,17 @@ void ShowNodeEditor()
 
 	if (ImGui::BeginPopupContextWindow())
 	{
-		if (ImGui::MenuItem("Linear Regression"))
+		if(ImGui::BeginMenu("Linear Regression"))
 		{
-			nodeEditor->spawnNewLinearRegression();
+			if (ImGui::MenuItem("New"))
+			{
+				nodeEditor->spawnNewLinearRegression();
+			}
+			if (ImGui::MenuItem("Set"))
+			{
+				nodeEditor->spawnSetLinearRegressionObject();
+			}
+			ImGui::EndMenu();
 		}
 
 		ImGui::EndPopup();
