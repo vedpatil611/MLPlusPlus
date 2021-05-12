@@ -1,6 +1,7 @@
 #pragma once
 
 #include <imgui.h>
+#include <imfilebrowser.h>
 #include <imnodes/imnodes.h>
 #include <NodeEditor/Object.h>
 
@@ -73,10 +74,17 @@ namespace Nodes
 
 	class FileReader : public Node
 	{
+	private:
+		static inline int s_count = 0;
+		int count = 0;
+		char filename[64] = "";
+		char filepath[256] = "";
+		bool fileSelection = false;
+		ImGui::FileBrowser fileDialog;
 	public:
 		FileReader(int id);
 		void show() override;
-		inline int lastIdOffset() const override { return 4; }
-		static inline constexpr int getIdIncreament() { return 4; }
+		inline int lastIdOffset() const override { return 6; }
+		static inline constexpr int getIdIncreament() { return 6; }
 	};
 }

@@ -23,8 +23,7 @@ NodeEditor* nodeEditor;
 PointRenderer* pointRenderer;
 LineRenderer* lineRenderer;
 
-void PropertyPanel();
-void ShowNodeEditor();
+//void PropertyPanel();
 
 int main()
 {

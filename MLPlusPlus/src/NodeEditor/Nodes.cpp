@@ -173,7 +173,12 @@ namespace Nodes
 	}
 	
 	FileReader::FileReader(int id)
-		:Node(id) {}
+		:Node(id) 
+	{
+		count = ++s_count;
+		fileDialog.SetTitle("Select File");
+		fileDialog.SetTypeFilters({ ".csv" });
+	}
 
 	void FileReader::show()
 	{
@@ -192,10 +197,37 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImGui::NewLine();
+		ImNodes::BeginStaticAttribute(id++);
+		ImGui::PushItemWidth(50);
+		ImGui::InputText("Filename", filename, 64, ImGuiInputTextFlags_ReadOnly);
+		ImGui::PopItemWidth();
+		ImGui::Indent(100);
+		ImNodes::EndStaticAttribute();
+
+		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
-		ImGui::Indent(90);
 		ImGui::Text("obj");
 		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginStaticAttribute(id++);
+		if (ImGui::Button("Select File"))
+		{
+			fileSelection = true;
+			fileDialog.Open();
+		}
+		ImNodes::EndStaticAttribute();
+
+		if (fileSelection)
+		{
+			fileDialog.Display();
+			if (fileDialog.HasSelected())
+			{
+				strcpy(filename, fileDialog.GetSelected().filename().string().c_str());
+				//doc = rapidcsv::Document(fileDialog.GetSelected().string().c_str());
+				fileSelection = false;
+			}
+		}
 
 		ImNodes::EndNode();
 	}
