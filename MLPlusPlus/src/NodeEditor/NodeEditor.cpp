@@ -45,9 +45,16 @@ void NodeEditor::renderEditor()
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::MenuItem("Set"))
+		if (ImGui::BeginMenu("Set"))
 		{
-			spawnSet();
+			for (int i = 0; i < objects.size(); ++i)
+			{
+				if (ImGui::MenuItem(objects[i]->name))
+				{
+					spawnSet(objects[i]->name);
+				}
+			}
+			ImGui::EndMenu();
 		}
 		ImGui::EndPopup();
 	}
@@ -166,9 +173,18 @@ void NodeEditor::spawnMain()
 	id += Nodes::Main::getIdIncreament();
 }
 
-void NodeEditor::spawnSet()
+void NodeEditor::spawnSet(const char* varName)
 {
-	nodes.emplace_back(new Nodes::Set(id));
+	Nodes::Object* obj = nullptr;
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		if (strcmp(varName, objects[i]->name) == 0)
+		{
+			obj = objects[i];
+			break;
+		}
+	}
+	nodes.emplace_back(new Nodes::Set(id, obj));
 	id += Nodes::Set::getIdIncreament();
 }
 

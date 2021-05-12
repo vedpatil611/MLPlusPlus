@@ -52,8 +52,8 @@ namespace Nodes
 		ImNodes::EndNode();
 	}
 
-	Set::Set(int id)
-		:Node(id) 
+	Set::Set(int id, Object* obj)
+		:Node(id), object(obj)
 	{
 		count = ++s_count;
 	}
@@ -64,7 +64,9 @@ namespace Nodes
 		ImNodes::BeginNode(id++);
 
 		ImNodes::BeginNodeTitleBar();
-		ImGui::TextUnformatted("Set");
+		char t[64];
+		sprintf(t, "Set %s", object->name);
+		ImGui::TextUnformatted(t);
 		ImNodes::EndNodeTitleBar();
 
 		ImNodes::BeginInputAttribute(id++);
@@ -76,13 +78,27 @@ namespace Nodes
 		char s[8];
 		sprintf(s, "name%d", count);
 		ImGui::NewLine();
-		ImNodes::BeginStaticAttribute(id++);
-		ImGui::PushItemWidth(50);
-		ImGui::PushID(ImGui::GetID(s));
-		ImGui::InputText("", name, 16);
-		ImGui::PopID();
-		ImGui::PopItemWidth();
-		ImNodes::EndStaticAttribute();
+		switch (object->type)
+		{
+		case DataType::INT:
+		case DataType::FLOAT:
+		case DataType::STRING:
+		{
+			ImNodes::BeginInputAttribute(id++);
+			ImGui::PushItemWidth(50);
+			ImGui::PushID(ImGui::GetID(s));
+			ImGui::InputText("value", name, 16);
+			ImGui::PopID();
+			ImGui::PopItemWidth();
+			ImNodes::EndInputAttribute();
+			break;
+		}
+		default:
+			ImNodes::BeginInputAttribute(id++);
+			ImGui::Text("value");
+			ImNodes::EndInputAttribute();
+			break;
+		}
 
 		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
@@ -91,5 +107,13 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
+	}
+	
+	LR_SetIterations::LR_SetIterations(int id)
+		:Node(id) {}
+	
+	void LR_SetIterations::show()
+	{
+
 	}
 }

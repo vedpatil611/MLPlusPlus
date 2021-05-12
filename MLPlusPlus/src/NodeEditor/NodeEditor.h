@@ -27,7 +27,7 @@ public:
 	void renderVariablesPanel();
 
 	void spawnMain();
-	void spawnSet();
+	void spawnSet(const char* varName);
 	void spawnNewLinearRegression();
 
 	void addLink(Nodes::Link* link);

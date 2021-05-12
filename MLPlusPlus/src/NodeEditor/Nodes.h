@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 #include <imnodes/imnodes.h>
+#include <NodeEditor/Object.h>
 
 namespace Nodes
 {
@@ -32,14 +33,24 @@ namespace Nodes
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
 
+	class LR_SetIterations : public Node
+	{
+	public:
+		LR_SetIterations(int id);
+		void show() override;
+		inline int lastIdOffset() const override { return 4; }
+		static inline constexpr int getIdIncreament() { return 4; }
+	};
+
 	class Set : public Node
 	{
 	private:
 		static inline int s_count = 0;
 		char name[64] = "";
 		int count;
+		Object* object;
 	public:
-		Set(int id);
+		Set(int id, Object* obj = nullptr);
 		void show() override;
 		inline int lastIdOffset() const override { return 5; }
 		static inline constexpr int getIdIncreament() { return 5; }
