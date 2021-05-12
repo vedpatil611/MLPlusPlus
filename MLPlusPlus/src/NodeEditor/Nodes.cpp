@@ -5,7 +5,7 @@
 namespace Nodes
 {
 	Main::Main(int id)
-		:Node(id) {}
+		:Node(id, -1, id + 1) {}
 
 	void Main::show()
 	{
@@ -24,7 +24,7 @@ namespace Nodes
 	}
 
 	LinearRegression::LinearRegression(int id)
-		:Node(id) {}
+		:Node(id, id + 1, id + 2) { }
 
 	void LinearRegression::show()
 	{
@@ -52,7 +52,7 @@ namespace Nodes
 	}
 
 	Set::Set(int id, Object* obj)
-		:Node(id), object(obj)
+		:Node(id, id + 1, id + 2), object(obj)
 	{
 		count = ++s_count;
 	}
@@ -104,49 +104,8 @@ namespace Nodes
 		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
 		ImGui::Indent(100);
-		ImGui::Text("lr object");
+		ImGui::Text(object->name);
 		ImNodes::EndOutputAttribute();
-
-		ImNodes::EndNode();
-	}
-	
-	LR_SetIterations::LR_SetIterations(int id)
-		:Node(id) 
-	{
-		count = ++s_count;
-	}
-	
-	void LR_SetIterations::show()
-	{
-		int id = start_id;
-		ImNodes::BeginNode(id++);
-
-		ImNodes::BeginNodeTitleBar();
-		ImGui::TextUnformatted("Set Iterations");
-		ImNodes::EndNodeTitleBar();
-
-		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
-		ImNodes::EndInputAttribute();
-
-		ImGui::SameLine();
-		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
-		ImNodes::EndOutputAttribute();
-
-		ImGui::NewLine();
-		ImNodes::BeginInputAttribute(id++);
-		ImGui::Text("lr object");
-		ImNodes::EndInputAttribute();
-
-		ImGui::NewLine();
-		ImNodes::BeginInputAttribute(id++);
-		char t[4] = "";
-		sprintf(t, "t%d", count);
-		ImGui::PushItemWidth(30);
-		ImGui::PushID(ImGui::GetID(t));
-		ImGui::InputText("value", value, 16);
-		ImGui::PopID();
-		ImGui::PopItemWidth();
-		ImNodes::EndInputAttribute();
 
 		ImNodes::EndNode();
 	}
@@ -167,13 +126,14 @@ namespace Nodes
 		ImNodes::EndNodeTitleBar();
 
 		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Text(object->name);
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
 	}
 	
 	FileReader::FileReader(int id)
-		:Node(id) 
+		:Node(id, id + 1, id + 2) 
 	{
 		count = ++s_count;
 		fileDialog.SetTitle("Select File");
@@ -201,12 +161,12 @@ namespace Nodes
 		ImGui::PushItemWidth(50);
 		ImGui::InputText("Filename", filename, 64, ImGuiInputTextFlags_ReadOnly);
 		ImGui::PopItemWidth();
-		ImGui::Indent(100);
 		ImNodes::EndStaticAttribute();
 
 		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
-		ImGui::Text("obj");
+		ImGui::Indent(100);
+		ImGui::Text("self");
 		ImNodes::EndOutputAttribute();
 
 		ImGui::NewLine();
@@ -233,7 +193,7 @@ namespace Nodes
 	}
 	
 	FR_ReadColumn::FR_ReadColumn(int id)
-		:Node(id)
+		:Node(id, id + 1, id + 2)
 	{
 		count = ++s_count;
 	}
@@ -281,7 +241,7 @@ namespace Nodes
 	}
 
 	LR_Train::LR_Train(int id)
-		:Node(id) 
+		:Node(id, id + 1, id + 2) 
 	{
 		count = ++s_count;
 	}
@@ -310,6 +270,7 @@ namespace Nodes
 
 		ImGui::SameLine();
 		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(90);
 		ImGui::Text("self");
 		ImNodes::EndOutputAttribute();
 
@@ -342,6 +303,46 @@ namespace Nodes
 		ImGui::NewLine();
 		ImNodes::BeginInputAttribute(id++);
 		ImGui::Text("y");
+		ImNodes::EndInputAttribute();
+
+		ImNodes::EndNode();
+	}
+
+	LR_Predict::LR_Predict(int id)
+		:Node(id, id + 1, id + 2)
+	{
+	}
+	void LR_Predict::show()
+	{
+		int id = start_id;
+
+		ImNodes::BeginNode(id++);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text("Predict");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("self");
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(90);
+		ImGui::Text("y array");
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("x array");
 		ImNodes::EndInputAttribute();
 
 		ImNodes::EndNode();

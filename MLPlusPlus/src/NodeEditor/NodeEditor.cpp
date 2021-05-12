@@ -46,16 +46,6 @@ void NodeEditor::renderEditor()
 
 	if (ImGui::BeginPopupContextWindow())
 	{
-		if (ImGui::BeginMenu("Linear Regression"))
-		{
-			if (ImGui::MenuItem("New"))
-				SPAWN_NODE(Nodes::LinearRegression);
-			if (ImGui::MenuItem("Train"))
-				SPAWN_NODE(Nodes::LR_Train);
-
-			ImGui::EndMenu();
-		}
-
 		if (ImGui::BeginMenu("Set"))
 		{
 			for (int i = 0; i < objects.size(); ++i)
@@ -73,6 +63,18 @@ void NodeEditor::renderEditor()
 				if (ImGui::MenuItem(objects[i]->name))
 					spawnGet(objects[i]->name);
 			}
+			ImGui::EndMenu();
+		}
+		
+		if (ImGui::BeginMenu("Linear Regression"))
+		{
+			if (ImGui::MenuItem("New"))
+				SPAWN_NODE(Nodes::LinearRegression);
+			if (ImGui::MenuItem("Train"))
+				SPAWN_NODE(Nodes::LR_Train);
+			if (ImGui::MenuItem("Predict"))
+				SPAWN_NODE(Nodes::LR_Predict);
+
 			ImGui::EndMenu();
 		}
 
@@ -99,7 +101,25 @@ void NodeEditor::renderEditor()
 		static int id = 0;
 		int start_id, end_id;
 		if (ImNodes::IsLinkCreated(&start_id, &end_id))
+		{
 			addLink(new Nodes::Link(++id, start_id, end_id));
+
+			for (int i = 0; i < nodes.size(); ++i)
+			{
+				if (nodes[i]->n == start_id)
+				{
+					for (int j = 0; j < nodes.size(); ++j)
+					{
+						if (nodes[j]->p == end_id)
+						{
+							nodes[i]->next = nodes[j];
+							nodes[j]->prev = nodes[i];
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	{
@@ -115,6 +135,7 @@ void NodeEditor::renderEditor()
 		}
 	}
 
+	// 261 is code for delete key
 	if (window->getKeys()[261])
 	{
 		int ns[128] = { 0 };

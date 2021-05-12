@@ -16,6 +16,7 @@ namespace Nodes
 		Node* next = nullptr;
 
 		Node(int id) : start_id(id) {}
+		Node(int id, int p, int n) : start_id(id), p(p), n(n) {}
 		virtual void show() = 0;
 		virtual int lastIdOffset() const = 0;
 	};
@@ -38,7 +39,7 @@ namespace Nodes
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
 
-	class LR_Train :public Node
+	class LR_Train : public Node
 	{
 	private:
 		static inline int s_count = 0;
@@ -48,21 +49,17 @@ namespace Nodes
 	public:
 		LR_Train(int id);
 		void show() override;
-		inline int lastIdOffset() const override { return 4; }
-		static inline constexpr int getIdIncreament() { return 4; }
+		inline int lastIdOffset() const override { return 9; }
+		static inline constexpr int getIdIncreament() { return 9; }
 	};
 
-	class LR_SetIterations : public Node
+	class LR_Predict :public Node
 	{
-	private:
-		static inline int s_count = 0;
-		int count;
-		char value[8] = "";
 	public:
-		LR_SetIterations(int id);
+		LR_Predict(int id);
 		void show() override;
-		inline int lastIdOffset() const override { return 5; }
-		static inline constexpr int getIdIncreament() { return 5; }
+		inline int lastIdOffset() const override { return 6; }
+		static inline constexpr int getIdIncreament() { return 6; }
 	};
 
 	class Set : public Node
