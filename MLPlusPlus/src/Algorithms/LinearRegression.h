@@ -9,9 +9,11 @@ private:
 	unsigned int epoch;
 	double m, c;
 public:
+	LinearRegression();
 	LinearRegression(double learningRate, unsigned int epoch);
 	
 	void train(std::vector<double>& x, std::vector<double>& y);
+	void train(double learningRate, unsigned int iters, std::vector<double>& x, std::vector<double>& y);
 	inline double getY(double x) const { return m * x + c; }
 	std::vector<double> predict(const std::vector<double>& x) const;
 };
