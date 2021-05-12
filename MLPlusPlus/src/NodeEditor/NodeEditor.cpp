@@ -7,6 +7,7 @@ NodeEditor::NodeEditor(Window* window)
 	:window(window)
 {
 	ImNodes::CreateContext();
+	//ImNodes::SetNodeGridSpacePos(1, ImVec2(200.0f, 200.0f));
 }
 
 NodeEditor::~NodeEditor()
@@ -215,6 +216,7 @@ void NodeEditor::spawnMain()
 
 void NodeEditor::spawnSet(const char* varName)
 {
+	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
 	Nodes::Object* obj = nullptr;
 	for (int i = 0; i < objects.size(); ++i)
 	{
@@ -230,6 +232,7 @@ void NodeEditor::spawnSet(const char* varName)
 
 void NodeEditor::spawnGet(const char* varName)
 {
+	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
 	Nodes::Object* obj = nullptr;
 	for (int i = 0; i < objects.size(); ++i)
 	{
@@ -245,18 +248,21 @@ void NodeEditor::spawnGet(const char* varName)
 
 void NodeEditor::spawnNewFileReader()
 {
+	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
 	nodes.emplace_back(new Nodes::FileReader(id));
 	id += Nodes::FileReader::getIdIncreament();
 }
 
 void NodeEditor::spawnNewLinearRegression()
 {
+	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
 	nodes.emplace_back(new Nodes::LinearRegression(id));
 	id += Nodes::LinearRegression::getIdIncreament();
 }
 
 void NodeEditor::spawnSetIterations()
 {
+	ImNodes::SetNodeScreenSpacePos(id + 1, ImGui::GetIO().MousePos);
 	nodes.emplace_back(new Nodes::LR_SetIterations(id));
 	id += Nodes::LR_SetIterations::getIdIncreament();
 }
