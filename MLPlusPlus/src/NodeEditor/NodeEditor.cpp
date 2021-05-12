@@ -3,11 +3,18 @@
 #include <string>
 #include <Window.h>
 
-NodeEditor::NodeEditor(Window* window)
+#define SPAWN_NODE(x) {												\
+	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);	\
+	nodes.emplace_back(new x(id));									\
+	id += x::getIdIncreament();										\
+}
+
+	NodeEditor::NodeEditor(Window* window)
 	:window(window)
 {
 	ImNodes::CreateContext();
-	//ImNodes::SetNodeGridSpacePos(1, ImVec2(200.0f, 200.0f));
+	nodes.emplace_back(new Nodes::Main(id));
+	id += Nodes::Main::getIdIncreament();
 }
 
 NodeEditor::~NodeEditor()
@@ -42,13 +49,10 @@ void NodeEditor::renderEditor()
 		if (ImGui::BeginMenu("Linear Regression"))
 		{
 			if (ImGui::MenuItem("New"))
-			{
-				spawnNewLinearRegression();
-			}
-			if (ImGui::MenuItem("Set Iterations"))
-			{
-				spawnSetIterations();
-			}
+				SPAWN_NODE(Nodes::LinearRegression);
+			if (ImGui::MenuItem("Train"))
+				SPAWN_NODE(Nodes::LR_Train);
+
 			ImGui::EndMenu();
 		}
 
@@ -57,9 +61,7 @@ void NodeEditor::renderEditor()
 			for (int i = 0; i < objects.size(); ++i)
 			{
 				if (ImGui::MenuItem(objects[i]->name))
-				{
 					spawnSet(objects[i]->name);
-				}
 			}
 			ImGui::EndMenu();
 		}
@@ -69,9 +71,7 @@ void NodeEditor::renderEditor()
 			for (int i = 0; i < objects.size(); ++i)
 			{
 				if (ImGui::MenuItem(objects[i]->name))
-				{
 					spawnGet(objects[i]->name);
-				}
 			}
 			ImGui::EndMenu();
 		}
@@ -79,9 +79,10 @@ void NodeEditor::renderEditor()
 		if (ImGui::BeginMenu("File Reader"))
 		{
 			if (ImGui::MenuItem("new"))
-			{
-				spawnNewFileReader();
-			}
+				SPAWN_NODE(Nodes::FileReader);
+			if (ImGui::MenuItem("Read Column"))
+				SPAWN_NODE(Nodes::FR_ReadColumn);
+			
 			ImGui::EndMenu();
 		}
 		ImGui::EndPopup();
@@ -192,13 +193,13 @@ void NodeEditor::renderVariablesPanel()
 		ImGui::PushItemWidth(-1);
 		if (ImGui::BeginCombo(objects[i]->name, objects[i]->typeSelected))
 		{
-			if (ImGui::Selectable("Integer"))					{ objects[i]->type = Nodes::DataType::INT; strcpy(objects[i]->typeSelected, "Integer"); }
-			if (ImGui::Selectable("Float"))						{ objects[i]->type = Nodes::DataType::FLOAT; strcpy(objects[i]->typeSelected, "Float"); }
-			if (ImGui::Selectable("String"))					{ objects[i]->type = Nodes::DataType::STRING; strcpy(objects[i]->typeSelected, "String"); }
-			if (ImGui::Selectable("Bool"))						{ objects[i]->type = Nodes::DataType::BOOL; strcpy(objects[i]->typeSelected, "Bool"); }
-			if (ImGui::Selectable("Array"))						{ objects[i]->type = Nodes::DataType::ARRAY; strcpy(objects[i]->typeSelected, "Array"); }
-			if (ImGui::Selectable("Linear Regression Object"))	{ objects[i]->type = Nodes::DataType::LINEAR_REGRESSION_MODEL; strcpy(objects[i]->typeSelected, "Linear Regression Object"); }
-			if (ImGui::Selectable("File Reader Object"))		{ objects[i]->type = Nodes::DataType::FILE_READER_OBJECT; strcpy(objects[i]->typeSelected, "File Reader Object"); }
+			if (ImGui::Selectable("Integer"))					{ objects[i]->type = Nodes::DataType::INT;						strcpy(objects[i]->typeSelected, "Integer");					}
+			if (ImGui::Selectable("Float"))						{ objects[i]->type = Nodes::DataType::FLOAT;					strcpy(objects[i]->typeSelected, "Float");						}
+			if (ImGui::Selectable("String"))					{ objects[i]->type = Nodes::DataType::STRING;					strcpy(objects[i]->typeSelected, "String");						}
+			if (ImGui::Selectable("Bool"))						{ objects[i]->type = Nodes::DataType::BOOL;						strcpy(objects[i]->typeSelected, "Bool");						}
+			if (ImGui::Selectable("Array"))						{ objects[i]->type = Nodes::DataType::ARRAY;					strcpy(objects[i]->typeSelected, "Array");						}
+			if (ImGui::Selectable("Linear Regression Object"))	{ objects[i]->type = Nodes::DataType::LINEAR_REGRESSION_MODEL;	strcpy(objects[i]->typeSelected, "Linear Regression Object");	}
+			if (ImGui::Selectable("File Reader Object"))		{ objects[i]->type = Nodes::DataType::FILE_READER_OBJECT;		strcpy(objects[i]->typeSelected, "File Reader Object");			}
 			ImGui::EndCombo();
 		}
 		ImGui::PopItemWidth();
@@ -206,12 +207,6 @@ void NodeEditor::renderVariablesPanel()
 	ImGui::EndTable();
 
 	ImGui::End();
-}
-
-void NodeEditor::spawnMain()
-{
-	nodes.emplace_back(new Nodes::Main(id));
-	id += Nodes::Main::getIdIncreament();
 }
 
 void NodeEditor::spawnSet(const char* varName)
@@ -244,27 +239,6 @@ void NodeEditor::spawnGet(const char* varName)
 	}
 	nodes.emplace_back(new Nodes::Get(id, obj));
 	id += Nodes::Get::getIdIncreament();
-}
-
-void NodeEditor::spawnNewFileReader()
-{
-	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
-	nodes.emplace_back(new Nodes::FileReader(id));
-	id += Nodes::FileReader::getIdIncreament();
-}
-
-void NodeEditor::spawnNewLinearRegression()
-{
-	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);
-	nodes.emplace_back(new Nodes::LinearRegression(id));
-	id += Nodes::LinearRegression::getIdIncreament();
-}
-
-void NodeEditor::spawnSetIterations()
-{
-	ImNodes::SetNodeScreenSpacePos(id + 1, ImGui::GetIO().MousePos);
-	nodes.emplace_back(new Nodes::LR_SetIterations(id));
-	id += Nodes::LR_SetIterations::getIdIncreament();
 }
 
 void NodeEditor::addLink(Nodes::Link* link)

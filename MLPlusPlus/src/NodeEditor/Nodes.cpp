@@ -231,4 +231,119 @@ namespace Nodes
 
 		ImNodes::EndNode();
 	}
+	
+	FR_ReadColumn::FR_ReadColumn(int id)
+		:Node(id)
+	{
+		count = ++s_count;
+	}
+
+	void FR_ReadColumn::show()
+	{
+		int id = start_id;
+
+		ImNodes::BeginNode(id++);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text("Read Column");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("self");
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(90);
+		ImGui::Text("Array");
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginStaticAttribute(id++);
+		char colName[4] = "";
+		sprintf(colName, "c%d", count);
+		ImGui::PushItemWidth(50);
+		ImGui::PushID(ImGui::GetID(colName));
+		ImGui::InputText("Column Name", columnName, 32);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+		ImNodes::EndStaticAttribute();
+
+		ImNodes::EndNode();
+	}
+
+	LR_Train::LR_Train(int id)
+		:Node(id) 
+	{
+		count = ++s_count;
+	}
+
+	void LR_Train::show()
+	{
+		int id = start_id;
+		
+		ImNodes::BeginNode(id++);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text("Train");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("self");
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Text("self");
+		ImNodes::EndOutputAttribute();
+
+		char colName[8] = "";
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		sprintf(colName, "tr%d", count);
+		ImGui::PushItemWidth(50);
+		ImGui::PushID(ImGui::GetID(colName));
+		ImGui::InputText("Rate", rate, 8);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		sprintf(colName, "tr%d", count);
+		ImGui::PushItemWidth(50);
+		ImGui::PushID(ImGui::GetID(colName));
+		ImGui::InputText("Iterations", iter, 8);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("x");
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("y");
+		ImNodes::EndInputAttribute();
+
+		ImNodes::EndNode();
+	}
 }

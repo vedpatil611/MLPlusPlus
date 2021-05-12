@@ -31,7 +31,7 @@ int main()
 
 	DockableWindow::init(window);
 	nodeEditor = new NodeEditor(window);
-	nodeEditor->spawnMain();
+	//nodeEditor->spawnMain();
 
 	fileDialog.SetTitle("Select File");
 	fileDialog.SetTypeFilters({ ".csv" });

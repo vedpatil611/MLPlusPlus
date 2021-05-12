@@ -38,6 +38,20 @@ namespace Nodes
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
 
+	class LR_Train :public Node
+	{
+	private:
+		static inline int s_count = 0;
+		int count = 0;
+		char rate[8] = "0.01";
+		char iter[8] = "1000";
+	public:
+		LR_Train(int id);
+		void show() override;
+		inline int lastIdOffset() const override { return 4; }
+		static inline constexpr int getIdIncreament() { return 4; }
+	};
+
 	class LR_SetIterations : public Node
 	{
 	private:
@@ -87,6 +101,19 @@ namespace Nodes
 		ImGui::FileBrowser fileDialog;
 	public:
 		FileReader(int id);
+		void show() override;
+		inline int lastIdOffset() const override { return 6; }
+		static inline constexpr int getIdIncreament() { return 6; }
+	};
+
+	class FR_ReadColumn :public Node
+	{
+	private:
+		static inline int s_count = 0;
+		int count = 0;
+		char columnName[32] = "";
+	public:
+		FR_ReadColumn(int id);
 		void show() override;
 		inline int lastIdOffset() const override { return 6; }
 		static inline constexpr int getIdIncreament() { return 6; }
