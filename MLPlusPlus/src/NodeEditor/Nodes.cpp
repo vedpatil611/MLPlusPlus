@@ -58,8 +58,8 @@ namespace Nodes
 		:Node(id, id + 1, id + 2), object(obj)
 	{
 		count = ++s_count;
-		//inputs = { id + 4 };
-		//outputs = { id + 5 };
+		inputs.emplace_back(id + 4, object->type);
+		outputs.emplace_back(id + 5, object->type);
 	}
 	
 	void Set::show()
@@ -118,7 +118,7 @@ namespace Nodes
 	Get::Get(int id, Object* obj)
 		:Node(id), object(obj) 
 	{
-		//outputs = { {id + 2} };
+		outputs.emplace_back(id + 2, object->type);
 	}
 
 	void Get::show()
