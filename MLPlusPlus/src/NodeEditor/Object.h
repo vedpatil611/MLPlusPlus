@@ -8,7 +8,9 @@ namespace Nodes
 		FLOAT,
 		STRING,
 		BOOL,
-		LINEAR_REGRESSION_MODEL
+		ARRAY,
+		LINEAR_REGRESSION_MODEL,
+		FILE_READER_OBJECT
 	};
 
 	class Object 

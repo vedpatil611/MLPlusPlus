@@ -15,6 +15,8 @@ NodeEditor::~NodeEditor()
 		delete x;
 	for (auto* x : links)
 		delete x;
+	for (auto* x : objects)
+		delete x;
 
 	ImNodes::DestroyContext();
 }
@@ -42,6 +44,10 @@ void NodeEditor::renderEditor()
 			{
 				spawnNewLinearRegression();
 			}
+			if (ImGui::MenuItem("Set Iterations"))
+			{
+				spawnSetIterations();
+			}
 			ImGui::EndMenu();
 		}
 
@@ -53,6 +59,27 @@ void NodeEditor::renderEditor()
 				{
 					spawnSet(objects[i]->name);
 				}
+			}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Get"))
+		{
+			for (int i = 0; i < objects.size(); ++i)
+			{
+				if (ImGui::MenuItem(objects[i]->name))
+				{
+					spawnGet(objects[i]->name);
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("File Reader"))
+		{
+			if (ImGui::MenuItem("new"))
+			{
+				spawnNewFileReader();
 			}
 			ImGui::EndMenu();
 		}
@@ -188,10 +215,37 @@ void NodeEditor::spawnSet(const char* varName)
 	id += Nodes::Set::getIdIncreament();
 }
 
+void NodeEditor::spawnGet(const char* varName)
+{
+	Nodes::Object* obj = nullptr;
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		if (strcmp(varName, objects[i]->name) == 0)
+		{
+			obj = objects[i];
+			break;
+		}
+	}
+	nodes.emplace_back(new Nodes::Get(id, obj));
+	id += Nodes::Get::getIdIncreament();
+}
+
+void NodeEditor::spawnNewFileReader()
+{
+	nodes.emplace_back(new Nodes::FileReader(id));
+	id += Nodes::FileReader::getIdIncreament();
+}
+
 void NodeEditor::spawnNewLinearRegression()
 {
 	nodes.emplace_back(new Nodes::LinearRegression(id));
 	id += Nodes::LinearRegression::getIdIncreament();
+}
+
+void NodeEditor::spawnSetIterations()
+{
+	nodes.emplace_back(new Nodes::LR_SetIterations(id));
+	id += Nodes::LR_SetIterations::getIdIncreament();
 }
 
 void NodeEditor::addLink(Nodes::Link* link)

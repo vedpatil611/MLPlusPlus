@@ -28,7 +28,10 @@ public:
 
 	void spawnMain();
 	void spawnSet(const char* varName);
+	void spawnGet(const char* varName);
+	void spawnNewFileReader();
 	void spawnNewLinearRegression();
+	void spawnSetIterations();
 
 	void addLink(Nodes::Link* link);
 	inline std::vector<Nodes::Link*>& getLinks() { return links; }

@@ -16,7 +16,7 @@ namespace Nodes
 		ImGui::TextUnformatted("Main");
 		ImNodes::EndNodeTitleBar();
 
-		ImNodes::BeginOutputAttribute(id++);
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
 		ImGui::Text("Start");
 		ImNodes::EndOutputAttribute();
 
@@ -35,12 +35,11 @@ namespace Nodes
 		ImGui::TextUnformatted("LinearRegression");
 		ImNodes::EndNodeTitleBar();
 
-		ImNodes::BeginInputAttribute(id++);
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
 		ImNodes::EndInputAttribute();
 
 		ImGui::SameLine();
-		ImNodes::BeginOutputAttribute(id++);
-		ImGui::Indent(50);
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
 		ImNodes::EndOutputAttribute();
 
 		ImGui::NewLine();
@@ -69,15 +68,17 @@ namespace Nodes
 		ImGui::TextUnformatted(t);
 		ImNodes::EndNodeTitleBar();
 
-		ImNodes::BeginInputAttribute(id++);
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
 		ImNodes::EndInputAttribute();
 
-		ImNodes::BeginOutputAttribute(id++);
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
 		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
 
 		char s[8];
 		sprintf(s, "name%d", count);
-		ImGui::NewLine();
 		switch (object->type)
 		{
 		case DataType::INT:
@@ -110,10 +111,92 @@ namespace Nodes
 	}
 	
 	LR_SetIterations::LR_SetIterations(int id)
-		:Node(id) {}
+		:Node(id) 
+	{
+		count = ++s_count;
+	}
 	
 	void LR_SetIterations::show()
 	{
+		int id = start_id;
+		ImNodes::BeginNode(id++);
 
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Set Iterations");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("lr object");
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		char t[4] = "";
+		sprintf(t, "t%d", count);
+		ImGui::PushItemWidth(30);
+		ImGui::PushID(ImGui::GetID(t));
+		ImGui::InputText("value", value, 16);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+		ImNodes::EndInputAttribute();
+
+		ImNodes::EndNode();
+	}
+	
+	Get::Get(int id, Object* obj)
+		:Node(id), object(obj) {}
+
+	void Get::show()
+	{
+		int id = start_id;
+
+		ImNodes::BeginNode(id++);
+
+		char title[64] = "";
+		sprintf(title, "Get %s", object->name);
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text(title);
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginOutputAttribute(id++);
+		ImNodes::EndOutputAttribute();
+
+		ImNodes::EndNode();
+	}
+	
+	FileReader::FileReader(int id)
+		:Node(id) {}
+
+	void FileReader::show()
+	{
+		int id = start_id;
+		ImNodes::BeginNode(id++);
+		
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text("File Reader");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginOutputAttribute(id++);
+		ImGui::Indent(90);
+		ImGui::Text("obj");
+		ImNodes::EndOutputAttribute();
+
+		ImNodes::EndNode();
 	}
 }
