@@ -185,9 +185,22 @@ void NodeEditor::renderVariablesPanel()
 		ImGui::TableNextColumn();
 		ImGui::PushItemWidth(-1);
 		ImGui::InputText(s, objects[i]->name, 64);
+		ImGui::PopItemWidth();
 
 		ImGui::TableNextColumn();
-		ImGui::Text("Float");
+		ImGui::PushItemWidth(-1);
+		if (ImGui::BeginCombo(objects[i]->name, objects[i]->typeSelected))
+		{
+			if (ImGui::Selectable("Integer"))					{ objects[i]->type = Nodes::DataType::INT; strcpy(objects[i]->typeSelected, "Integer"); }
+			if (ImGui::Selectable("Float"))						{ objects[i]->type = Nodes::DataType::FLOAT; strcpy(objects[i]->typeSelected, "Float"); }
+			if (ImGui::Selectable("String"))					{ objects[i]->type = Nodes::DataType::STRING; strcpy(objects[i]->typeSelected, "String"); }
+			if (ImGui::Selectable("Bool"))						{ objects[i]->type = Nodes::DataType::BOOL; strcpy(objects[i]->typeSelected, "Bool"); }
+			if (ImGui::Selectable("Array"))						{ objects[i]->type = Nodes::DataType::ARRAY; strcpy(objects[i]->typeSelected, "Array"); }
+			if (ImGui::Selectable("Linear Regression Object"))	{ objects[i]->type = Nodes::DataType::LINEAR_REGRESSION_MODEL; strcpy(objects[i]->typeSelected, "Linear Regression Object"); }
+			if (ImGui::Selectable("File Reader Object"))		{ objects[i]->type = Nodes::DataType::FILE_READER_OBJECT; strcpy(objects[i]->typeSelected, "File Reader Object"); }
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
 	}
 	ImGui::EndTable();
 

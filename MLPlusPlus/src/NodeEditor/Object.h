@@ -4,7 +4,7 @@ namespace Nodes
 {
 	enum class DataType
 	{
-		INT,
+		INT = 1,
 		FLOAT,
 		STRING,
 		BOOL,
@@ -19,7 +19,7 @@ namespace Nodes
 		void* object;
 		DataType type;
 		char name[64] = "";
-		bool isSelected;
+		char typeSelected[32] = "Float";
 
 		Object();
 		Object(DataType type, void* object, bool selected = false);

@@ -11,6 +11,10 @@ namespace Nodes
 	{
 	public:
 		int start_id;
+		int p = -1, n = -1;
+		Node* prev = nullptr;
+		Node* next = nullptr;
+
 		Node(int id) : start_id(id) {}
 		virtual void show() = 0;
 		virtual int lastIdOffset() const = 0;
