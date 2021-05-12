@@ -24,7 +24,10 @@ namespace Nodes
 	}
 
 	LinearRegression::LinearRegression(int id)
-		:Node(id, id + 1, id + 2) { }
+		:Node(id, id + 1, id + 2) 
+	{
+		outputs.emplace_back(id + 4, DataType::LINEAR_REGRESSION_MODEL);
+	}
 
 	void LinearRegression::show()
 	{
@@ -55,6 +58,8 @@ namespace Nodes
 		:Node(id, id + 1, id + 2), object(obj)
 	{
 		count = ++s_count;
+		//inputs = { id + 4 };
+		//outputs = { id + 5 };
 	}
 	
 	void Set::show()
@@ -111,7 +116,10 @@ namespace Nodes
 	}
 	
 	Get::Get(int id, Object* obj)
-		:Node(id), object(obj) {}
+		:Node(id), object(obj) 
+	{
+		//outputs = { {id + 2} };
+	}
 
 	void Get::show()
 	{
@@ -138,6 +146,8 @@ namespace Nodes
 		count = ++s_count;
 		fileDialog.SetTitle("Select File");
 		fileDialog.SetTypeFilters({ ".csv" });
+
+		outputs.emplace_back(id + 5, DataType::FILE_READER_OBJECT);
 	}
 
 	void FileReader::show()
@@ -196,6 +206,9 @@ namespace Nodes
 		:Node(id, id + 1, id + 2)
 	{
 		count = ++s_count;
+
+		inputs.emplace_back(id + 4, DataType::FILE_READER_OBJECT);
+		outputs.emplace_back(id + 5, DataType::ARRAY);
 	}
 
 	void FR_ReadColumn::show()
@@ -244,6 +257,13 @@ namespace Nodes
 		:Node(id, id + 1, id + 2) 
 	{
 		count = ++s_count;
+
+		inputs.emplace_back(id + 4, DataType::LINEAR_REGRESSION_MODEL);
+		inputs.emplace_back(id + 6, DataType::FLOAT);
+		inputs.emplace_back(id + 7, DataType::INT);
+		inputs.emplace_back(id + 8, DataType::ARRAY);
+		inputs.emplace_back(id + 9, DataType::ARRAY);
+		outputs.emplace_back(id + 5, DataType::LINEAR_REGRESSION_MODEL);
 	}
 
 	void LR_Train::show()
@@ -311,7 +331,12 @@ namespace Nodes
 	LR_Predict::LR_Predict(int id)
 		:Node(id, id + 1, id + 2)
 	{
+		inputs.emplace_back(id + 4, DataType::LINEAR_REGRESSION_MODEL);
+		inputs.emplace_back(id + 6, DataType::ARRAY);
+
+		outputs.emplace_back(id + 5, DataType::LINEAR_REGRESSION_MODEL);
 	}
+
 	void LR_Predict::show()
 	{
 		int id = start_id;

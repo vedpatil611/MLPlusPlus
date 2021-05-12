@@ -7,6 +7,12 @@
 
 namespace Nodes
 {
+	class Pin 
+	{
+		int id;
+		DataType type;
+	};
+
 	class Node 
 	{
 	public:
@@ -14,6 +20,8 @@ namespace Nodes
 		int p = -1, n = -1;
 		Node* prev = nullptr;
 		Node* next = nullptr;
+		std::vector<Pin> inputs;
+		std::vector<Pin> outputs;
 
 		Node(int id) : start_id(id) {}
 		Node(int id, int p, int n) : start_id(id), p(p), n(n) {}
