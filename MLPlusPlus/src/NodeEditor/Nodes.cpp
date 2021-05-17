@@ -1,6 +1,8 @@
 #include "Nodes.h"
 
 #include <stdio.h>
+#include <algorithm>
+#include <Algorithms/LinearRegression.h>
 
 namespace Nodes
 {
@@ -22,6 +24,8 @@ namespace Nodes
 
 		ImNodes::EndNode();
 	}
+
+	void Main::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
 
 	LinearRegression::LinearRegression(int id)
 		:Node(id, id + 1, id + 2) 
@@ -52,6 +56,13 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
+	}
+
+	void LinearRegression::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
+		::LinearRegression* lr = new ::LinearRegression();
+		self->object = (void*) lr;
+		output->object = (void*) lr;
 	}
 
 	Set::Set(int id, Object* obj)
@@ -114,6 +125,59 @@ namespace Nodes
 
 		ImNodes::EndNode();
 	}
+
+	void Set::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 4 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j) 
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						object->object = nodes[j]->output->object;
+						output = object;
+						pinParsed = true;
+						return;
+					}
+				}
+			}
+		}
+
+		if (!pinParsed)
+		{
+			switch (object->type)
+			{
+			case DataType::FLOAT:
+			{
+				double* v = new double;
+				*v = atof(name);
+				object->object = (void *) v;
+				output = object;
+				break;
+			}
+			case DataType::INT:
+			{
+				int* v = new int;
+				*v = atof(name);
+				object->object = (void*) v;
+				output = object;
+				break;
+			}
+			case DataType::STRING:
+			{
+				char* v = new char[20];
+				strcpy(v, name);
+				object->object = (void*) v;
+				output = object;
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
 	
 	Get::Get(int id, Object* obj)
 		:Node(id), object(obj) 
@@ -138,6 +202,10 @@ namespace Nodes
 		ImNodes::EndOutputAttribute();
 
 		ImNodes::EndNode();
+	}
+
+	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
 	}
 	
 	FileReader::FileReader(int id)
@@ -201,6 +269,10 @@ namespace Nodes
 
 		ImNodes::EndNode();
 	}
+
+	void FileReader::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
+	}
 	
 	FR_ReadColumn::FR_ReadColumn(int id)
 		:Node(id, id + 1, id + 2)
@@ -251,6 +323,10 @@ namespace Nodes
 		ImNodes::EndStaticAttribute();
 
 		ImNodes::EndNode();
+	}
+
+	void FR_ReadColumn::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
 	}
 
 	LR_Train::LR_Train(int id)
@@ -328,6 +404,10 @@ namespace Nodes
 		ImNodes::EndNode();
 	}
 
+	void LR_Train::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
+	}
+
 	LR_Predict::LR_Predict(int id)
 		:Node(id, id + 1, id + 2)
 	{
@@ -371,5 +451,9 @@ namespace Nodes
 		ImNodes::EndInputAttribute();
 
 		ImNodes::EndNode();
+	}
+	
+	void LR_Predict::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
 	}
 }

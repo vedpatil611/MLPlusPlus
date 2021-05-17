@@ -4,13 +4,18 @@
 #include <imfilebrowser.h>
 #include <imnodes/imnodes.h>
 #include <NodeEditor/Object.h>
+#include <NodeEditor/NodeLink.h>
 
 namespace Nodes
 {
 	class Pin 
 	{
+	public:
 		int id;
 		DataType type;
+		Object* obj;
+		
+		Pin(int id, DataType type) : id(id), type(type) {}
 	};
 
 	class Node 
@@ -22,10 +27,12 @@ namespace Nodes
 		Node* next = nullptr;
 		std::vector<Pin> inputs;
 		std::vector<Pin> outputs;
+		Object* output = nullptr;
 
 		Node(int id) : start_id(id) {}
 		Node(int id, int p, int n) : start_id(id), p(p), n(n) {}
 		virtual void show() = 0;
+		virtual void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) = 0;
 		virtual int lastIdOffset() const = 0;
 	};
 
@@ -34,15 +41,19 @@ namespace Nodes
 	public:
 		Main(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 2; }
 		static inline constexpr int getIdIncreament() { return 2; }
 	};
 
 	class LinearRegression : public Node
 	{
+	private:
+		Object* self;
 	public:
 		LinearRegression(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 4; }
 		static inline constexpr int getIdIncreament() { return 4; }
 	};
@@ -57,6 +68,7 @@ namespace Nodes
 	public:
 		LR_Train(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 9; }
 		static inline constexpr int getIdIncreament() { return 9; }
 	};
@@ -66,6 +78,7 @@ namespace Nodes
 	public:
 		LR_Predict(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 6; }
 		static inline constexpr int getIdIncreament() { return 6; }
 	};
@@ -77,9 +90,11 @@ namespace Nodes
 		int count;
 		char name[64] = "";
 		Object* object;
+		bool pinParsed = false;
 	public:
 		Set(int id, Object* obj = nullptr);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 5; }
 		static inline constexpr int getIdIncreament() { return 5; }
 	};
@@ -91,6 +106,7 @@ namespace Nodes
 	public:
 		Get(int id, Object* obj);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 2; }
 		static inline constexpr int getIdIncreament() { return 2; }
 	};
@@ -107,6 +123,7 @@ namespace Nodes
 	public:
 		FileReader(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 6; }
 		static inline constexpr int getIdIncreament() { return 6; }
 	};
@@ -120,6 +137,7 @@ namespace Nodes
 	public:
 		FR_ReadColumn(int id);
 		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		inline int lastIdOffset() const override { return 6; }
 		static inline constexpr int getIdIncreament() { return 6; }
 	};

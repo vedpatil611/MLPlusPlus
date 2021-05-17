@@ -97,6 +97,8 @@ void NodeEditor::renderEditor()
 
 	ImNodes::EndNodeEditor();
 
+
+	// link creation check
 	{
 		static int id = 0;
 		int start_id, end_id;
@@ -122,6 +124,7 @@ void NodeEditor::renderEditor()
 		}
 	}
 
+	// link break check
 	{
 		int link_id;
 		if (ImNodes::IsLinkDestroyed(&link_id))
@@ -135,6 +138,7 @@ void NodeEditor::renderEditor()
 		}
 	}
 
+	// delete nodes and link
 	// 261 is code for delete key
 	if (window->getKeys()[261])
 	{
@@ -144,6 +148,8 @@ void NodeEditor::renderEditor()
 		for (auto& x = nodes.begin(); x != nodes.end();)
 		{
 			auto it = std::find(ns, ns + 128, (*x)->start_id);
+			if ((*x)->start_id == 1) continue; // avoid deleting main function
+				
 			if (it < ns + 128)
 			{
 				if (x == nodes.end() - 1)
@@ -160,6 +166,7 @@ void NodeEditor::renderEditor()
 		int ls[128] = { 0 };
 		ImNodes::GetSelectedLinks(ls);
 
+		// delete selected links
 		for (auto x = links.begin(); x < links.end();)
 		{
 			auto it = std::find(ls, ls + 128, (*x)->id);
