@@ -432,6 +432,104 @@ namespace Nodes
 
 	void LR_Train::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		::LinearRegression* lr;
+		double rate;
+		int iter;
+		std::vector<double> x, y;
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 4 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 6 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						rate = *static_cast<double*>(nodes[j]->output->object);
+						rateParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!rateParsed)
+		{
+			rate = atof(this->rate);
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 7 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						iter = *static_cast<double*>(nodes[j]->output->object);
+						iterParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!iterParsed)
+		{
+			iter = atoi(this->iter);
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 8 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						iterParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 9 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						y = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						iterParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		lr->train(rate, iter, x, y);
+		output = new Object();
+		output->type = DataType::LINEAR_REGRESSION_MODEL;
+		output->object = (void*) lr;
 	}
 
 	LR_Predict::LR_Predict(int id)
@@ -481,5 +579,42 @@ namespace Nodes
 	
 	void LR_Predict::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		::LinearRegression* lr;
+		std::vector<double> x;
+		
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 4 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 6 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						break;
+					}
+				}
+			}
+		}
+
+		auto y = lr->predict(x);
+		output = new Object();
+		output->type = DataType::ARRAY;
+		output->object = (void*) y;
 	}
 }

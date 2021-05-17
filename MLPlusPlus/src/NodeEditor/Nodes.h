@@ -66,6 +66,8 @@ namespace Nodes
 		int count = 0;
 		char rate[8] = "0.01";
 		char iter[8] = "1000";
+		bool rateParsed = false;
+		bool iterParsed = false;
 	public:
 		LR_Train(int id);
 		void show() override;
