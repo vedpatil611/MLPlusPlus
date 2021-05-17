@@ -160,7 +160,7 @@ namespace Nodes
 			case DataType::INT:
 			{
 				int* v = new int;
-				*v = atof(name);
+				*v = atoi(name);
 				object->object = (void*) v;
 				output = object;
 				break;
@@ -206,6 +206,7 @@ namespace Nodes
 
 	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		output = object;
 	}
 	
 	FileReader::FileReader(int id)
@@ -261,6 +262,7 @@ namespace Nodes
 			fileDialog.Display();
 			if (fileDialog.HasSelected())
 			{
+				strcpy(filepath, fileDialog.GetSelected().string().c_str());
 				strcpy(filename, fileDialog.GetSelected().filename().string().c_str());
 				//doc = rapidcsv::Document(fileDialog.GetSelected().string().c_str());
 				fileSelection = false;
@@ -272,6 +274,10 @@ namespace Nodes
 
 	void FileReader::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		doc = rapidcsv::Document(filepath);
+		output = new Object();
+		output->type = DataType::FILE_READER_OBJECT;
+		output->object = (void*) &doc;
 	}
 	
 	FR_ReadColumn::FR_ReadColumn(int id)
@@ -327,6 +333,26 @@ namespace Nodes
 
 	void FR_ReadColumn::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		Object* in;
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 4 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->start_id)
+					{
+						in = nodes[j]->output;
+						auto* doc = static_cast<rapidcsv::Document*>(in->object);
+						arr = doc->GetColumn<double>(columnName);
+						output = new Object();
+						output->type = DataType::ARRAY;
+						output->object = &arr;
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	LR_Train::LR_Train(int id)

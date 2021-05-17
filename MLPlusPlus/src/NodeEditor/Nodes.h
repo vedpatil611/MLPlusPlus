@@ -5,6 +5,7 @@
 #include <imnodes/imnodes.h>
 #include <NodeEditor/Object.h>
 #include <NodeEditor/NodeLink.h>
+#include <rapidcsv.h>
 
 namespace Nodes
 {
@@ -120,6 +121,7 @@ namespace Nodes
 		char filepath[256] = "";
 		bool fileSelection = false;
 		ImGui::FileBrowser fileDialog;
+		rapidcsv::Document doc;
 	public:
 		FileReader(int id);
 		void show() override;
@@ -133,6 +135,7 @@ namespace Nodes
 	private:
 		static inline int s_count = 0;
 		int count = 0;
+		std::vector<double> arr;
 		char columnName[32] = "";
 	public:
 		FR_ReadColumn(int id);

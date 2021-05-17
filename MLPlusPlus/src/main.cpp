@@ -54,7 +54,7 @@ int main()
 		nodeEditor->renderVariablesPanel();
 		DockableWindow::end();
 
-		window->swapBuffer();
+		window->swapBuffer();	
 	}
 
 	delete pointRenderer;
