@@ -615,6 +615,6 @@ namespace Nodes
 		auto y = lr->predict(x);
 		output = new Object();
 		output->type = DataType::ARRAY;
-		output->object = (void*) y;
+		output->object = (void*) &y;
 	}
 }
