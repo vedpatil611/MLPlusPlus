@@ -50,7 +50,7 @@ namespace Nodes
 	class LinearRegression : public Node
 	{
 	private:
-		Object* self;
+		//Object* self;
 	public:
 		LinearRegression(int id);
 		void show() override;

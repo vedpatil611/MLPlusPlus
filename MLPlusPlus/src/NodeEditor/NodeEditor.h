@@ -16,6 +16,7 @@ private:
 	std::vector<Nodes::Node*> nodes;
 	std::vector<Nodes::Link*> links;
 	std::vector<Nodes::Object*> objects;
+	Nodes::Node* mainRef;
 public:
 	NodeEditor(class Window* window);
 	~NodeEditor();

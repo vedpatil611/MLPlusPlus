@@ -16,7 +16,7 @@ Window::Window()
 		glfwTerminate();
 		throw std::runtime_error("Failed to create window");
 	}
-
+	
 	glfwGetFramebufferSize(m_Window, &m_BufferWidth, &m_BufferHeight);
 	glfwMakeContextCurrent(m_Window);
 	glfwSetWindowUserPointer(m_Window, this);

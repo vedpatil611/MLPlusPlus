@@ -13,8 +13,10 @@
 	:window(window)
 {
 	ImNodes::CreateContext();
-	nodes.emplace_back(new Nodes::Main(id));
+	auto* m = new Nodes::Main(id);
+	nodes.emplace_back(m);
 	id += Nodes::Main::getIdIncreament();
+	mainRef = m;
 }
 
 NodeEditor::~NodeEditor()
@@ -138,6 +140,18 @@ void NodeEditor::renderEditor()
 		}
 	}
 
+	// 294 is code for F5
+	// start executing code
+	if (window->getKeys()[294])
+	{
+		auto* t = mainRef;
+		while (t != nullptr)
+		{
+			t->execute(nodes, links);
+			t = t->next;
+		}
+	}
+
 	// delete nodes and link
 	// 261 is code for delete key
 	if (window->getKeys()[261])
@@ -148,7 +162,7 @@ void NodeEditor::renderEditor()
 		for (auto& x = nodes.begin(); x != nodes.end();)
 		{
 			auto it = std::find(ns, ns + 128, (*x)->start_id);
-			if ((*x)->start_id == 1) continue; // avoid deleting main function
+			//if ((*x)->start_id == 1) continue; // avoid deleting main function
 				
 			if (it < ns + 128)
 			{
