@@ -203,7 +203,7 @@ void NodeEditor::renderEditor()
 		int ns[128] = { 0 };
 		ImNodes::GetSelectedNodes(ns);
 
-		for (auto& x = nodes.begin(); x != nodes.end();)
+		for (auto x = nodes.begin(); x != nodes.end();)
 		{
 			auto it = std::find(ns, ns + 128, (*x)->start_id);
 			//if ((*x)->start_id == 1) continue; // avoid deleting main function
@@ -225,7 +225,11 @@ void NodeEditor::renderEditor()
 		ImNodes::GetSelectedLinks(ls);
 
 		// delete selected links
+#ifdef OS_LINUX
 		for (auto x = links.begin(); x < links.end();)
+#elif OS_WINDOWS
+        for (auto& x = links.begin(); x < links.end();)
+#endif
 		{
 			auto it = std::find(ls, ls + 128, (*x)->id);
 			if (it < ls + 128)

@@ -70,14 +70,18 @@ project "MLPlusPlus"
 
 	filter "system:windows"
 		defines {
+            "OS_WINDOWS",
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 		undefines {
 			"_DEBUG"
 		}
 
-	filter "system:linux"
-		links {
+	filter "system:linux or unix"
+		defines {
+            "OS_LINUX"
+        }
+        links {
 			"dl",
 			"pthread"
 		}

@@ -1,5 +1,10 @@
 #include "File.h"
 
+#ifdef OS_LINUX
+#include <string.h>
+#include <stdio.h>
+#endif
+
 #include <memory>
 
 const char* Utils::readFile(const char* filepath)
