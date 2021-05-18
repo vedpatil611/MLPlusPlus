@@ -148,6 +148,19 @@ void NodeEditor::renderEditor()
 		while (t != nullptr)
 		{
 			t->execute(nodes, links);
+			if (t->hasError)
+			{
+				printf("%s\n", t->error);
+				t->hasError = false;
+				break;
+			}
+			t = t->next;
+		}
+
+		t = mainRef;
+		while (t != nullptr)
+		{
+			t->clean();
 			t = t->next;
 		}
 	}

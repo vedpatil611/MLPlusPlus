@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <Algorithms/LinearRegression.h>
 
+#define NODE_ERROR(message)		\
+	hasError = true;			\
+	strcpy(error, message);		\
+	return;
+
 namespace Nodes
 {
 	Main::Main(int id)
@@ -26,6 +31,10 @@ namespace Nodes
 	}
 
 	void Main::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
+
+	void Main::clean()
+	{
+	}
 
 	LinearRegression::LinearRegression(int id)
 		:Node(id, id + 1, id + 2) 
@@ -64,6 +73,10 @@ namespace Nodes
 		output = new Object();
 		output->type = DataType::LINEAR_REGRESSION_MODEL;
 		output->object = (void*) lr;
+	}
+
+	void LinearRegression::clean()
+	{
 	}
 
 	Set::Set(int id, Object* obj)
@@ -156,6 +169,7 @@ namespace Nodes
 				*v = atof(name);
 				object->object = (void *) v;
 				output = object;
+				pinParsed = true;
 				break;
 			}
 			case DataType::INT:
@@ -164,6 +178,7 @@ namespace Nodes
 				*v = atoi(name);
 				object->object = (void*) v;
 				output = object;
+				pinParsed = true;
 				break;
 			}
 			case DataType::STRING:
@@ -172,12 +187,22 @@ namespace Nodes
 				strcpy(v, name);
 				object->object = (void*) v;
 				output = object;
+				pinParsed = true;
 				break;
 			}
 			default:
 				break;
 			}
 		}
+
+		if (!pinParsed)
+		{
+			NODE_ERROR("Input pin not found at set");
+		}
+	}
+
+	void Set::clean()
+	{
 	}
 	
 	Get::Get(int id, Object* obj)
@@ -207,6 +232,10 @@ namespace Nodes
 	}
 
 	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
+
+	void Get::clean()
+	{
+	}
 	
 	FileReader::FileReader(int id)
 		:Node(id, id + 1, id + 2) 
@@ -273,10 +302,21 @@ namespace Nodes
 
 	void FileReader::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
-		doc = rapidcsv::Document(filepath);
-		output = new Object();
-		output->type = DataType::FILE_READER_OBJECT;
-		output->object = (void*) &doc;
+		try 
+		{
+			doc = rapidcsv::Document(filepath);
+			output = new Object();
+			output->type = DataType::FILE_READER_OBJECT;
+			output->object = (void*)&doc;
+		}
+		catch (std::exception& e)
+		{
+			NODE_ERROR("file not selected for file reader constructor");
+		}
+	}
+
+	void FileReader::clean()
+	{
 	}
 	
 	FR_ReadColumn::FR_ReadColumn(int id)
@@ -332,6 +372,7 @@ namespace Nodes
 
 	void FR_ReadColumn::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		bool pinParsed = false;
 		Object* in;
 		for (int i = 0; i < links.size(); ++i)
 		{
@@ -341,17 +382,38 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id -1 == links[i]->end_id || nodes[j]->outputs[0].id -1 == links[i]->start_id))
 					{
+						pinParsed = true;
 						in = nodes[j]->output;
-						auto* doc = static_cast<rapidcsv::Document*>(in->object);
-						arr = doc->GetColumn<double>(columnName);
-						output = new Object();
-						output->type = DataType::ARRAY;
-						output->object = (void*) &arr;
-						return;
+						if (in->object == nullptr)
+						{
+							NODE_ERROR("Filereader object reference is null");
+						}
+						try 
+						{
+							auto* doc = static_cast<rapidcsv::Document*>(in->object);
+							arr = doc->GetColumn<double>(columnName);
+							output = new Object();
+							output->type = DataType::ARRAY;
+							output->object = (void*)&arr;
+							return;
+						}
+						catch (std::exception e)
+						{
+							NODE_ERROR("Column name not found");
+						}
 					}
 				}
 			}
 		}
+
+		if (!pinParsed)
+		{
+			NODE_ERROR("File reader reference pin not connected");
+		}
+	}
+
+	void FR_ReadColumn::clean()
+	{
 	}
 
 	LR_Train::LR_Train(int id)
@@ -431,6 +493,9 @@ namespace Nodes
 
 	void LR_Train::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		bool lrParsed, rateParsed, iterParsed, xParsed, yParsed;
+		lrParsed = rateParsed = iterParsed = xParsed = yParsed = false;
+
 		::LinearRegression* lr;
 		double rate;
 		int iter;
@@ -445,10 +510,19 @@ namespace Nodes
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
+						if (lr == nullptr)
+						{
+							NODE_ERROR("lr object is null");
+						}
+						lrParsed = true;
 						break;
 					}
 				}
 			}
+		}
+		if (!lrParsed)
+		{
+			NODE_ERROR("Lr pin reference not connected");
 		}
 
 		for (int i = 0; i < links.size(); ++i)
@@ -461,6 +535,10 @@ namespace Nodes
 					{
 						rate = *static_cast<double*>(nodes[j]->output->object);
 						rateParsed = true;
+						if (nodes[j]->output->object == nullptr)
+						{
+							rateParsed = false;
+						}
 						break;
 					}
 				}
@@ -469,7 +547,14 @@ namespace Nodes
 
 		if (!rateParsed)
 		{
-			rate = atof(this->rate);
+			try
+			{
+				rate = atof(this->rate);
+			}
+			catch (std::exception& e)
+			{
+				NODE_ERROR("Couldn't parse rate at Linear regression train");
+			}
 		}
 
 		for (int i = 0; i < links.size(); ++i)
@@ -482,6 +567,10 @@ namespace Nodes
 					{
 						iter = *static_cast<double*>(nodes[j]->output->object);
 						iterParsed = true;
+						if (nodes[j]->output->object == nullptr)
+						{
+							iterParsed = false;
+						}
 						break;
 					}
 				}
@@ -490,7 +579,14 @@ namespace Nodes
 
 		if (!iterParsed)
 		{
-			iter = atoi(this->iter);
+			try
+			{
+				iter = atoi(this->iter);
+			}
+			catch (std::exception& e)
+			{
+				NODE_ERROR("Couldn't parse iterations");
+			}
 		}
 
 		for (int i = 0; i < links.size(); ++i)
@@ -501,11 +597,21 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("X array reference is null");
+						}
 						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						xParsed = true;
 						break;
 					}
 				}
 			}
+		}
+
+		if (!xParsed)
+		{
+			NODE_ERROR("X array reference pin is not connected");
 		}
 
 		for (int i = 0; i < links.size(); ++i)
@@ -516,6 +622,10 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("Y array reference is null");
+						}
 						y = *static_cast<std::vector<double>*>(nodes[j]->output->object);
 						break;
 					}
@@ -523,10 +633,19 @@ namespace Nodes
 			}
 		}
 
+		if (!yParsed)
+		{
+			NODE_ERROR("Y array reference is not connected");
+		}
+
 		lr->train(rate, iter, x, y);
 		output = new Object();
 		output->type = DataType::LINEAR_REGRESSION_MODEL;
 		output->object = (void*) lr;
+	}
+
+	void LR_Train::clean()
+	{
 	}
 
 	LR_Predict::LR_Predict(int id)
@@ -576,6 +695,8 @@ namespace Nodes
 	
 	void LR_Predict::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
+		bool lrParsed, xParsed;
+		lrParsed = xParsed = true;
 		::LinearRegression* lr;
 		std::vector<double> x;
 		
@@ -587,11 +708,20 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("LR object ref is null");
+						}
 						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
 						break;
 					}
 				}
 			}
+		}
+
+		if (!lrParsed)
+		{
+			NODE_ERROR("LR self reference pin not connected to linear regression train function");
 		}
 
 		for (int i = 0; i < links.size(); ++i)
@@ -602,6 +732,10 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->end_id))
 					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("X array reference is null")
+						}
 						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
 						break;
 					}
@@ -618,5 +752,9 @@ namespace Nodes
 			for (auto i : y)
 				printf("%f\n", i);
 		#endif // DEBUG
+	}
+
+	void LR_Predict::clean()
+	{
 	}
 }

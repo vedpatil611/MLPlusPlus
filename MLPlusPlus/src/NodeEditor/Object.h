@@ -16,7 +16,7 @@ namespace Nodes
 	class Object 
 	{
 	public:
-		void* object;
+		void* object = nullptr;
 		DataType type;
 		char name[64] = "";
 		char typeSelected[32] = "Float";
