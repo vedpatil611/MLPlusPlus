@@ -32,9 +32,7 @@ namespace Nodes
 
 	void Main::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
 
-	void Main::clean()
-	{
-	}
+	void Main::clean() { }
 
 	LinearRegression::LinearRegression(int id)
 		:Node(id, id + 1, id + 2) 
@@ -77,6 +75,8 @@ namespace Nodes
 
 	void LinearRegression::clean()
 	{
+		delete output;
+		output = nullptr;
 	}
 
 	Set::Set(int id, Object* obj)
@@ -201,9 +201,7 @@ namespace Nodes
 		}
 	}
 
-	void Set::clean()
-	{
-	}
+	void Set::clean() { }
 	
 	Get::Get(int id, Object* obj)
 		:Node(id), object(obj) 
@@ -233,9 +231,7 @@ namespace Nodes
 
 	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
 
-	void Get::clean()
-	{
-	}
+	void Get::clean() { }
 	
 	FileReader::FileReader(int id)
 		:Node(id, id + 1, id + 2) 
@@ -315,8 +311,9 @@ namespace Nodes
 		}
 	}
 
-	void FileReader::clean()
+	void FileReader::clean() 
 	{
+		output = nullptr;
 	}
 	
 	FR_ReadColumn::FR_ReadColumn(int id)
@@ -414,6 +411,7 @@ namespace Nodes
 
 	void FR_ReadColumn::clean()
 	{
+		arr.clear();
 	}
 
 	LR_Train::LR_Train(int id)
@@ -646,6 +644,8 @@ namespace Nodes
 
 	void LR_Train::clean()
 	{
+		delete output;
+		output = nullptr;
 	}
 
 	LR_Predict::LR_Predict(int id)
@@ -743,7 +743,7 @@ namespace Nodes
 			}
 		}
 
-		auto y = lr->predict(x);
+		y = lr->predict(x);
 		output = new Object();
 		output->type = DataType::ARRAY;
 		output->object = (void*) &y;
@@ -754,7 +754,9 @@ namespace Nodes
 		#endif // DEBUG
 	}
 
-	void LR_Predict::clean()
-	{
+	void LR_Predict::clean() 
+	{ 
+		output = nullptr;
+		y.clear();
 	}
 }

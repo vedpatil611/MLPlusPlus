@@ -56,7 +56,6 @@ namespace Nodes
 	class LinearRegression : public Node
 	{
 	private:
-		//Object* self;
 	public:
 		LinearRegression(int id);
 		void show() override;
@@ -86,6 +85,8 @@ namespace Nodes
 
 	class LR_Predict :public Node
 	{
+	private:
+		std::vector<double> y;
 	public:
 		LR_Predict(int id);
 		void show() override;
