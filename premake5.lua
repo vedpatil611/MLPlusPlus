@@ -17,7 +17,6 @@ include "Dependencies/ImGui"
 IncludeDirs = {}
 IncludeDirs["GLAD"] = "Dependencies/GLAD/include"
 IncludeDirs["GLFW"] = "Dependencies/glfw/include"
-IncludeDirs["GLM"] = "Dependencies/glm"
 IncludeDirs["ImGui"] = "Dependencies/ImGui/src/ImGui"
 IncludeDirs["ImFileBrowser"] = "Dependencies/imgui-filebrowser"
 IncludeDirs["RapidCSV"] = "Dependencies/rapidcsv/src"
@@ -37,7 +36,6 @@ project "MLPlusPlus"
 		"%{prj.name}/src/vendors",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.GLFW}",
-		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.ImFileBrowser}",
 		"%{IncludeDirs.ImGuiNodeEditor}",

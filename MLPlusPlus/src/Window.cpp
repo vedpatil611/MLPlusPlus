@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <stdexcept>
 
 Window::Window()
@@ -26,8 +25,6 @@ Window::Window()
 		glfwTerminate();
 		throw std::runtime_error("Failed to init open gl");
 	}
-
-	m_Proj = glm::ortho(-WIDTH / 2, WIDTH / 2, -HEIGHT / 2, HEIGHT / 2, -10.0f, 10.0f);
 
 	glfwSetKeyCallback(m_Window, &Window::keyCallback);
 	glfwSetMouseButtonCallback(m_Window, &Window::mouseKeyCallback);
@@ -64,11 +61,6 @@ bool Window::shouldClose() const
 void Window::setShouldClose(bool v)
 {
 	glfwSetWindowShouldClose(m_Window, v);
-}
-
-void Window::setProjCoords(double left, double right, double bottom, double up)
-{
-	m_Proj = glm::ortho(left, right, bottom, up, -10.0, 10.0);
 }
 
 void Window::keyCallback(GLFWwindow* m_Window, int key, int scancode, int action, int mods)
