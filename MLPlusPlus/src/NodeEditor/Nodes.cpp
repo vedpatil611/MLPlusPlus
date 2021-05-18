@@ -700,7 +700,7 @@ namespace Nodes
 	void LR_Predict::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
 		bool lrParsed, xParsed;
-		lrParsed = xParsed = true;
+		lrParsed = xParsed = false;
 		::LinearRegression* lr;
 		std::vector<double> x;
 		
@@ -717,6 +717,7 @@ namespace Nodes
 							NODE_ERROR("LR object ref is null");
 						}
 						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
+						lrParsed = true;
 						break;
 					}
 				}
@@ -730,21 +731,27 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 6 - 1 == links[i]->start_id || start_id + 6 - 1 == links[i]->start_id)
+			if (start_id + 6 - 1 == links[i]->start_id || start_id + 6 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->end_id))
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						if (nodes[j]->output->object == nullptr)
 						{
 							NODE_ERROR("X array reference is null")
 						}
 						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						xParsed = true;
 						break;
 					}
 				}
 			}
+		}
+
+		if (!xParsed)
+		{
+			NODE_ERROR("X array reference pin not connected to linear regression train function");
 		}
 
 		y = lr->predict(x);
