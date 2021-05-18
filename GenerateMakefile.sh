@@ -1,3 +1,3 @@
-#! /bin/bash
+#!/bin/sh
 
-./premake5 gmake
+premake5 gmake
