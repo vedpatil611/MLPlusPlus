@@ -9,6 +9,8 @@
 	strcpy(error, message);		\
 	return;
 
+#define DEL(x) try { delete x; } catch(std::exception& e) { }
+
 namespace Nodes
 {
 	Main::Main(int id)
@@ -303,7 +305,7 @@ namespace Nodes
 			doc = rapidcsv::Document(filepath);
 			output = new Object();
 			output->type = DataType::FILE_READER_OBJECT;
-			output->object = (void*)&doc;
+			output->object = (void*) &doc;
 		}
 		catch (std::exception& e)
 		{
@@ -411,6 +413,7 @@ namespace Nodes
 
 	void FR_ReadColumn::clean()
 	{
+		output = nullptr;
 		arr.clear();
 	}
 
@@ -625,6 +628,7 @@ namespace Nodes
 							NODE_ERROR("Y array reference is null");
 						}
 						y = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						yParsed = true;
 						break;
 					}
 				}

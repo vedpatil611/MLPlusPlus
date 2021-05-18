@@ -22,7 +22,7 @@ namespace Nodes
 		char typeSelected[32] = "Float";
 
 		Object();
-		Object(DataType type, void* object, bool selected = false);
+		Object(DataType type, void* object = nullptr, bool selected = false);
 		~Object();
 	};
 }

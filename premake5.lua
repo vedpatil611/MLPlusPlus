@@ -72,6 +72,9 @@ project "MLPlusPlus"
 		defines {
 			"_CRT_SECURE_NO_WARNINGS"
 		}
+		undefines {
+			"_DEBUG"
+		}
 
 	filter "system:linux"
 		links {

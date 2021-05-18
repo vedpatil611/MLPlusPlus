@@ -10,6 +10,6 @@ namespace Nodes
 
 	Object::~Object()
 	{
-		delete object;
+		if(!object) delete object;
 	}
 }

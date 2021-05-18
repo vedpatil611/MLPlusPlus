@@ -163,6 +163,8 @@ void NodeEditor::renderEditor()
 			t->clean();
 			t = t->next;
 		}
+		for (auto obj : objects)
+			delete obj;
 	}
 
 	// delete nodes and link
@@ -222,7 +224,7 @@ void NodeEditor::renderVariablesPanel()
 	{
 		if (ImGui::MenuItem("Add Variable"))
 		{
-			objects.emplace_back(new Nodes::Object(Nodes::DataType::FLOAT, nullptr));
+			objects.emplace_back(new Nodes::Object(Nodes::DataType::FLOAT));
 		}
 		ImGui::EndPopup();
 	}
