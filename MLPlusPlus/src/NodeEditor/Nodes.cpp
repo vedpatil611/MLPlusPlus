@@ -184,6 +184,7 @@ namespace Nodes
 		:Node(id), object(obj) 
 	{
 		outputs.emplace_back(id + 2, object->type);
+		output = object;
 	}
 
 	void Get::show()
@@ -205,10 +206,7 @@ namespace Nodes
 		ImNodes::EndNode();
 	}
 
-	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
-	{
-		output = object;
-	}
+	void Get::execute(std::vector<Node*>& nodes, std::vector<Link*>& links) { }
 	
 	FileReader::FileReader(int id)
 		:Node(id, id + 1, id + 2) 
@@ -337,18 +335,18 @@ namespace Nodes
 		Object* in;
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 4 == links[i]->start_id)
+			if (start_id + 4 - 1 == links[i]->start_id || start_id + 4 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id -1 == links[i]->end_id || nodes[j]->outputs[0].id -1 == links[i]->start_id))
 					{
 						in = nodes[j]->output;
 						auto* doc = static_cast<rapidcsv::Document*>(in->object);
 						arr = doc->GetColumn<double>(columnName);
 						output = new Object();
 						output->type = DataType::ARRAY;
-						output->object = &arr;
+						output->object = (void*) &arr;
 						return;
 					}
 				}
@@ -440,11 +438,11 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 4 == links[i]->start_id)
+			if (start_id + 4 - 1 == links[i]->start_id || start_id + 4 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
 						break;
@@ -455,11 +453,11 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 6 == links[i]->start_id)
+			if (start_id + 6 - 1 == links[i]->start_id || start_id + 6 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						rate = *static_cast<double*>(nodes[j]->output->object);
 						rateParsed = true;
@@ -476,11 +474,11 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 7 == links[i]->start_id)
+			if (start_id + 7 - 1 == links[i]->start_id || start_id + 7 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						iter = *static_cast<double*>(nodes[j]->output->object);
 						iterParsed = true;
@@ -497,14 +495,13 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 8 == links[i]->start_id)
+			if (start_id + 8 - 1 == links[i]->start_id || start_id + 8 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
-						iterParsed = true;
 						break;
 					}
 				}
@@ -513,14 +510,13 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 9 == links[i]->start_id)
+			if (start_id + 9 - 1 == links[i]->start_id || start_id + 9 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						y = *static_cast<std::vector<double>*>(nodes[j]->output->object);
-						iterParsed = true;
 						break;
 					}
 				}
@@ -585,11 +581,11 @@ namespace Nodes
 		
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 4 == links[i]->start_id)
+			if (start_id + 4 - 1 == links[i]->start_id || start_id + 4 - 1 == links[i]->end_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
 						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
 						break;
@@ -600,11 +596,11 @@ namespace Nodes
 
 		for (int i = 0; i < links.size(); ++i)
 		{
-			if (start_id + 6 == links[i]->start_id)
+			if (start_id + 6 - 1 == links[i]->start_id || start_id + 6 - 1 == links[i]->start_id)
 			{
 				for (int j = 0; j < nodes.size(); ++j)
 				{
-					if (!nodes.empty() && nodes[j]->outputs[0].id == links[i]->end_id)
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->end_id))
 					{
 						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
 						break;

@@ -84,6 +84,6 @@ project "MLPlusPlus"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "RELEASE" }
+		defines { "RELEASE", "NDEBUG" }
 		optimize "On"
 		buildoptions "/MD"
