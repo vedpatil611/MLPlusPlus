@@ -5,7 +5,13 @@
 #include <imnodes/imnodes.h>
 #include <NodeEditor/Object.h>
 #include <NodeEditor/NodeLink.h>
+#include <Plotter/Plotter.h>
 #include <rapidcsv.h>
+
+struct Graphs
+{
+	inline static Plotter* plotter = nullptr;
+};
 
 namespace Nodes
 {
@@ -158,6 +164,18 @@ namespace Nodes
 		char columnName[32] = "";
 	public:
 		FR_ReadColumn(int id);
+		void show() override;
+		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
+		void clean() override;
+
+		inline int lastIdOffset() const override { return 6; }
+		static inline constexpr int getIdIncreament() { return 6; }
+	};
+
+	class PlotGraph : public Node 
+	{
+	public:
+		PlotGraph(int id);
 		void show() override;
 		void execute(std::vector<Node*>& nodes, std::vector<Link*>& links) override;
 		void clean() override;

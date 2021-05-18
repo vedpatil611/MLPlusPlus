@@ -65,6 +65,8 @@ project "MLPlusPlus"
 		"%{prj.name}/src/Utils/**.cpp",
 		"%{prj.name}/src/vendors/imnodes/**.h",
 		"%{prj.name}/src/vendors/imnodes/**.cpp",
+		"%{prj.name}/src/vendors/implot/**.h",
+		"%{prj.name}/src/vendors/implot/**.cpp",
 		"%{prj.name}/Shaders/**.glsl",
 	}
 

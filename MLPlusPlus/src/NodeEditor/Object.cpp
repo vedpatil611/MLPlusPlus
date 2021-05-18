@@ -1,5 +1,7 @@
 #include "Object.h"
 
+#include <stdexcept>
+
 namespace Nodes
 {
 	Object::Object()
@@ -10,6 +12,7 @@ namespace Nodes
 
 	Object::~Object()
 	{
-		if(!object) delete object;
+		try							{ delete object; }
+		catch(std::exception& e)	{ }
 	}
 }

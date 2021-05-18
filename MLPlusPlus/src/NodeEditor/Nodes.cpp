@@ -9,8 +9,6 @@
 	strcpy(error, message);		\
 	return;
 
-#define DEL(x) try { delete x; } catch(std::exception& e) { }
-
 namespace Nodes
 {
 	Main::Main(int id)
@@ -95,9 +93,7 @@ namespace Nodes
 		ImNodes::BeginNode(id++);
 
 		ImNodes::BeginNodeTitleBar();
-		char t[64];
-		sprintf(t, "Set %s", object->name);
-		ImGui::TextUnformatted(t);
+		ImGui::Text("Set %s", object->name);
 		ImNodes::EndNodeTitleBar();
 
 		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
@@ -566,7 +562,7 @@ namespace Nodes
 				{
 					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
 					{
-						iter = *static_cast<double*>(nodes[j]->output->object);
+						iter = *static_cast<int*>(nodes[j]->output->object);
 						iterParsed = true;
 						if (nodes[j]->output->object == nullptr)
 						{
@@ -770,4 +766,130 @@ namespace Nodes
 		output = nullptr;
 		y.clear();
 	}
+	
+	PlotGraph::PlotGraph(int id)
+		:Node(id, id + 1, id + 2) {}
+
+	void PlotGraph::show()
+	{
+		int id = start_id;
+
+		ImNodes::BeginNode(id++);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::Text("Plot Graph");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndInputAttribute();
+
+		ImGui::SameLine();
+		ImNodes::BeginOutputAttribute(id++, ImNodesPinShape_TriangleFilled);
+		ImNodes::EndOutputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("LR object");
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("x array");
+		ImNodes::EndInputAttribute();
+
+		ImGui::NewLine();
+		ImNodes::BeginInputAttribute(id++);
+		ImGui::Text("y array");
+		ImNodes::EndInputAttribute();
+
+		ImNodes::EndNode();
+	}
+
+	void PlotGraph::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
+	{
+		bool lrParsed, xParsed, yParsed;
+		lrParsed = xParsed = yParsed = false;
+		::LinearRegression* lr;
+		std::vector<double> x, y;
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 4 - 1 == links[i]->start_id || start_id + 4 - 1 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
+					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("LR object ref is null");
+						}
+						lr = static_cast<::LinearRegression*>(nodes[j]->output->object);
+						lrParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!lrParsed)
+		{
+			NODE_ERROR("LR self reference pin not connected to plot");
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 5 - 1 == links[i]->start_id || start_id + 5 - 1 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
+					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("X array reference is null")
+						}
+						x = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						xParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!xParsed)
+		{
+			NODE_ERROR("X array reference pin not connected to linear regression train function");
+		}
+
+		for (int i = 0; i < links.size(); ++i)
+		{
+			if (start_id + 6 - 1 == links[i]->start_id || start_id + 6 - 1 == links[i]->end_id)
+			{
+				for (int j = 0; j < nodes.size(); ++j)
+				{
+					if (!nodes[j]->outputs.empty() && (nodes[j]->outputs[0].id - 1 == links[i]->end_id || nodes[j]->outputs[0].id - 1 == links[i]->start_id))
+					{
+						if (nodes[j]->output->object == nullptr)
+						{
+							NODE_ERROR("X array reference is null")
+						}
+						y = *static_cast<std::vector<double>*>(nodes[j]->output->object);
+						yParsed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!yParsed)
+		{
+			NODE_ERROR("Y array reference pin not connected to linear regression train function");
+		}
+
+		if (Graphs::plotter) delete Graphs::plotter;
+		Graphs::plotter = new Plotter(lr, x, y);
+	}
+
+	void PlotGraph::clean() { }
 }

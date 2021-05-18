@@ -45,13 +45,14 @@ int main()
 		window->pollInput();
 		window->clearBuffer();
 
-		lineRenderer->draw(window, 0.0f);
-		pointRenderer->draw(window, 0.0f);
+		//lineRenderer->draw(window, 0.0f);
+		//pointRenderer->draw(window, 0.0f);
 		
 		DockableWindow::begin();
 		//PropertyPanel();
 		nodeEditor->renderEditor();
 		nodeEditor->renderVariablesPanel();
+		nodeEditor->renderGraph();
 		DockableWindow::end();
 
 		window->swapBuffer();	

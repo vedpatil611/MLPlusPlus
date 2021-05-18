@@ -10,3 +10,6 @@
 [submodule "Dependencies/imgui-filebrowser"]
 	path = Dependencies/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser
+[submodule "MLPlusPlus/src/vendors/implot"]
+	path = MLPlusPlus/src/vendors/implot
+	url = https://github.com/epezent/implot

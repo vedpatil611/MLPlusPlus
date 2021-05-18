@@ -8,8 +8,6 @@
 #include <vector>
 
 class NodeEditor {
-public:
-	using Iterator = std::vector<Nodes::Node*>::iterator;
 private:
 	static inline unsigned int id = 1;
 	class Window* window;
@@ -21,16 +19,19 @@ public:
 	NodeEditor(class Window* window);
 	~NodeEditor();
 
-	Iterator begin();
-	Iterator end();
-
 	void renderEditor();
+	void renderGraph();
 	void renderVariablesPanel();
 
 	void spawnSet(const char* varName);
 	void spawnGet(const char* varName);
 
-	void addLink(Nodes::Link* link);
 	inline std::vector<Nodes::Link*>& getLinks() { return links; }
 	inline std::vector<Nodes::Node*>& getNodes() { return nodes; }
+
+#ifdef DEBUG
+private:
+	std::vector<double> x = { 1.0, 2.0, 3.0 };
+	std::vector<double> y = { 2.0, 4.5, 6.0 };
+#endif // DEBUG
 };

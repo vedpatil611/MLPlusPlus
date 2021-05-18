@@ -2,6 +2,11 @@
 
 #include <string>
 #include <Window.h>
+#include <implot/implot.h>
+
+#ifdef DEBUG
+#include <Algorithms/LinearRegression.h>
+#endif
 
 #define SPAWN_NODE(x) {												\
 	ImNodes::SetNodeScreenSpacePos(id, ImGui::GetIO().MousePos);	\
@@ -9,14 +14,40 @@
 	id += x::getIdIncreament();										\
 }
 
-	NodeEditor::NodeEditor(Window* window)
+NodeEditor::NodeEditor(Window* window)
 	:window(window)
 {
 	ImNodes::CreateContext();
+	ImPlot::CreateContext();
+
 	auto* m = new Nodes::Main(id);
 	nodes.emplace_back(m);
 	id += Nodes::Main::getIdIncreament();
 	mainRef = m;
+
+#ifdef DEBUG
+	::LinearRegression* lr = new ::LinearRegression();
+	lr->train(0.0001, 1000, x, y);
+
+	auto* o1 = new Nodes::Object(Nodes::DataType::ARRAY, (void*)&x);
+	strcpy(o1->name, "x");
+	strcpy(o1->typeSelected, "Array");
+
+	auto* o2 = new Nodes::Object(Nodes::DataType::ARRAY, (void*)&y);
+	strcpy(o2->name, "y");
+	strcpy(o2->typeSelected, "Array");
+	
+	auto* o3 = new Nodes::Object(Nodes::DataType::LINEAR_REGRESSION_MODEL, (void*)lr);
+	strcpy(o3->name, "lr");
+	strcpy(o3->typeSelected, "Linear Regression Object");
+
+	std::vector<double> a;
+
+	objects.emplace_back(o1);
+	objects.emplace_back(o2);
+	objects.emplace_back(o3);
+#endif // DEBUG
+
 }
 
 NodeEditor::~NodeEditor()
@@ -28,17 +59,8 @@ NodeEditor::~NodeEditor()
 	for (auto* x : objects)
 		delete x;
 
+	ImPlot::DestroyContext();
 	ImNodes::DestroyContext();
-}
-
-NodeEditor::Iterator NodeEditor::begin()
-{
-	return nodes.begin();
-}
-
-NodeEditor::Iterator NodeEditor::end()
-{
-	return nodes.end();
 }
 
 void NodeEditor::renderEditor()
@@ -46,8 +68,10 @@ void NodeEditor::renderEditor()
 	ImGui::Begin("Node Editor");
 	ImNodes::BeginNodeEditor();
 
+	// Right click editor to open menu to spawn nodes
 	if (ImGui::BeginPopupContextWindow())
 	{
+		// Set functions
 		if (ImGui::BeginMenu("Set"))
 		{
 			for (int i = 0; i < objects.size(); ++i)
@@ -57,7 +81,7 @@ void NodeEditor::renderEditor()
 			}
 			ImGui::EndMenu();
 		}
-
+		// Get functions
 		if (ImGui::BeginMenu("Get"))
 		{
 			for (int i = 0; i < objects.size(); ++i)
@@ -67,7 +91,7 @@ void NodeEditor::renderEditor()
 			}
 			ImGui::EndMenu();
 		}
-		
+		// Linear regression functions
 		if (ImGui::BeginMenu("Linear Regression"))
 		{
 			if (ImGui::MenuItem("New"))
@@ -79,7 +103,7 @@ void NodeEditor::renderEditor()
 
 			ImGui::EndMenu();
 		}
-
+		// File reader functions
 		if (ImGui::BeginMenu("File Reader"))
 		{
 			if (ImGui::MenuItem("new"))
@@ -89,6 +113,10 @@ void NodeEditor::renderEditor()
 			
 			ImGui::EndMenu();
 		}
+		// Plot graph node
+		if (ImGui::MenuItem("Plot Graph"))
+			SPAWN_NODE(Nodes::PlotGraph);
+
 		ImGui::EndPopup();
 	}
 
@@ -99,14 +127,13 @@ void NodeEditor::renderEditor()
 
 	ImNodes::EndNodeEditor();
 
-
 	// link creation check
 	{
 		static int id = 0;
 		int start_id, end_id;
 		if (ImNodes::IsLinkCreated(&start_id, &end_id))
 		{
-			addLink(new Nodes::Link(++id, start_id, end_id));
+			links.emplace_back(new Nodes::Link(++id, start_id, end_id));
 
 			for (int i = 0; i < nodes.size(); ++i)
 			{
@@ -157,14 +184,16 @@ void NodeEditor::renderEditor()
 			t = t->next;
 		}
 
-		t = mainRef;
+		// Garabage collection
+		/*t = mainRef;
 		while (t != nullptr)
 		{
 			t->clean();
 			t = t->next;
-		}
+		}*/
+
 		for (auto obj : objects)
-			delete obj;
+			delete obj->object;
 	}
 
 	// delete nodes and link
@@ -214,6 +243,14 @@ void NodeEditor::renderEditor()
 	}
 
 	ImGui::End();
+}
+
+void NodeEditor::renderGraph()
+{
+	if (Graphs::plotter != nullptr)
+	{
+		Graphs::plotter->plot();
+	}
 }
 
 void NodeEditor::renderVariablesPanel()
@@ -296,9 +333,4 @@ void NodeEditor::spawnGet(const char* varName)
 	}
 	nodes.emplace_back(new Nodes::Get(id, obj));
 	id += Nodes::Get::getIdIncreament();
-}
-
-void NodeEditor::addLink(Nodes::Link* link)
-{
-	links.emplace_back(link);
 }
