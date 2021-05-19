@@ -1,6 +1,16 @@
 # MLPlusPlus
 
-MLPlusPLus is a app where you can select a algorithm and train dataset, plot graphs, etc.
+MLPlusPLus is a app where you can select a algorithm and train dataset, plot graphs, etc. MLPlusPlus provides a visual scripting language to write a script to train a machine learning model.
+
+## Instructions
+* To add new variable right click on variable panel and click add variable and type variable name and select datatype.
+* To execute script simple press F5  
+
+<div align = "center">
+    <img src="./docs/blob/SampleCode.png">
+    <img src="./docs/blob/SampleCode2.png">
+    <img src="./docs/blob/GraphOutput.png">
+</div>
 
 ## Steps to compile
 
@@ -18,6 +28,7 @@ MLPlusPLus is a app where you can select a algorithm and train dataset, plot gra
 * Open your terminal
 * Clone project with `git clone --recurse-submodules https://github.com/vedpatil611/MLPLusPlus`
 * `cd MLPlusPLus`
+* `chmode +x GenerateMakefile.sh`
 * `./GenerateMakefile.sh`
 * `make`
 * `sudo make install` (optional)
