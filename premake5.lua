@@ -65,7 +65,6 @@ project "MLPlusPlus"
 		"%{prj.name}/src/vendors/imnodes/**.cpp",
 		"%{prj.name}/src/vendors/implot/**.h",
 		"%{prj.name}/src/vendors/implot/**.cpp",
-		"%{prj.name}/Shaders/**.glsl",
 	}
 
 	filter "system:windows"
