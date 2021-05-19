@@ -192,8 +192,8 @@ void NodeEditor::renderEditor()
 			t = t->next;
 		}*/
 
-		for (auto obj : objects)
-			delete obj->object;
+		/*for (auto obj : objects)
+			delete obj->object;*/
 	}
 
 	// delete nodes and link
