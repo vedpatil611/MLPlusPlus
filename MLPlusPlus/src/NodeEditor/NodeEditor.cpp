@@ -190,9 +190,9 @@ void NodeEditor::renderEditor()
 		{
 			t->clean();
 			t = t->next;
-		}*/
+		}
 
-		/*for (auto obj : objects)
+		for (auto obj : objects)
 			delete obj->object;*/
 	}
 
