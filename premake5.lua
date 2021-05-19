@@ -93,4 +93,3 @@ project "MLPlusPlus"
 	filter "configurations:Release"
 		defines { "RELEASE", "NDEBUG" }
 		optimize "On"
-		buildoptions "/MD"
