@@ -42,7 +42,11 @@ project "MLPlusPlus"
 		"%{IncludeDirs.RapidCSV}"
 	}
 
-	links {
+    defines {
+        "IMGUI_IMPL_OPENGL_LOADER_GLAD"
+    }
+	
+    links {
 		"GLFW",
 		"GLAD",
 		"ImGui"
@@ -78,7 +82,7 @@ project "MLPlusPlus"
 
 	filter "system:linux or unix"
 		defines {
-            "OS_LINUX"
+            "OS_LINUX",
         }
         links {
 			"dl",
