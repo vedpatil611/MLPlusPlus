@@ -30,7 +30,7 @@ MLPlusPLus is a app where you can select a algorithm and train dataset, plot gra
 * `cd MLPlusPLus`
 * `chmode +x GenerateMakefile.sh`
 * `./GenerateMakefile.sh`
-* `make`
-* `sudo make install` (optional)
+* `make config=release
+* `sudo make install (optional)
 
 [1]: https://github.com/premake/premake-core
