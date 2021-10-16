@@ -7,6 +7,9 @@ intermediate/
 *.user
 *.filters
 
-.ccls
-
 Makefile
+
+.ccls
+compile_commands.json
+
+imgui.ini
