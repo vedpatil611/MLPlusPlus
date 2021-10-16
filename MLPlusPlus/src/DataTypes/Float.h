@@ -2,9 +2,9 @@
 
 class Float {
 public:
-	float data;
+	double data;
 	
 	Float();
-	Float(float data);
+	Float(double data);
 	~Float() = default;
 };

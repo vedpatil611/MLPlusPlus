@@ -4,9 +4,9 @@
 
 class Array {
 public:
-	std::vector<float> data;
+	std::vector<double> data;
 
 	Array() = default;
-	Array(const std::vector<float>& data);
+	Array(const std::vector<double>& data);
 	~Array() = default;
 };

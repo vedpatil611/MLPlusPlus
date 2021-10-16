@@ -1,5 +1,5 @@
 #include "Float.h"
 
-Float::Float() :data(0.0f) {}
+Float::Float() :data(0.0) {}
 
-Float::Float(float data) : data(data) {}
+Float::Float(double data) : data(data) {}

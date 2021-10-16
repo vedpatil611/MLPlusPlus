@@ -3,10 +3,16 @@
 #include <stdio.h>
 #include <algorithm>
 #include <Algorithms/LinearRegression.h>
+#include <DataTypes/Array.h>
+#include <DataTypes/Bool.h>
+#include <DataTypes/FileReader.h>
+#include <DataTypes/Float.h>
+#include <DataTypes/Integer.h>
+#include <DataTypes/String.h>
 
-#define NODE_ERROR(message)		\
-	hasError = true;			\
-	strcpy(error, message);		\
+#define NODE_ERROR(message)	\
+	hasError = true;		\
+	strcpy(error, message);	\
 	return;
 
 namespace Nodes
@@ -67,10 +73,12 @@ namespace Nodes
 
 	void LinearRegression::execute(std::vector<Node*>& nodes, std::vector<Link*>& links)
 	{
-		::LinearRegression* lr = new ::LinearRegression();
-		output = new Object();
-		output->type = DataType::LINEAR_REGRESSION_MODEL;
-		output->object = (void*) lr;
+		//::LinearRegression* lr = new ::LinearRegression();
+		//output = new Object();
+		//output->type = DataType::LINEAR_REGRESSION_MODEL;
+		//output->object = (void*) lr;
+
+		output = new Object(DataType::LINEAR_REGRESSION_MODEL, (void*) new ::LinearRegression());
 	}
 
 	void LinearRegression::clean()
@@ -163,17 +171,25 @@ namespace Nodes
 			{
 			case DataType::FLOAT:
 			{
-				double* v = new double;
+				Float* v = new Float();
+				v->data = atof(name);
+				object->object = (void*) v;
+				output = object;
+				pinParsed = true;
+
+				/*double* v = new double;
 				*v = atof(name);
 				object->object = (void *) v;
 				output = object;
-				pinParsed = true;
+				pinParsed = true;*/
 				break;
 			}
 			case DataType::INT:
 			{
-				int* v = new int;
-				*v = atoi(name);
+				//int* v = new int;
+				//*v = atoi(name);
+				Integer* v = new Integer();
+				v->data = atoi(name);
 				object->object = (void*) v;
 				output = object;
 				pinParsed = true;
@@ -181,8 +197,11 @@ namespace Nodes
 			}
 			case DataType::STRING:
 			{
-				char* v = new char[20];
-				strcpy(v, name);
+				//char* v = new char[20];
+				//strcpy(v, name);
+
+				String* v = new String();
+				v->data = name;
 				object->object = (void*) v;
 				output = object;
 				pinParsed = true;
@@ -298,10 +317,12 @@ namespace Nodes
 	{
 		try 
 		{
-			doc = rapidcsv::Document(filepath);
+			/*doc = rapidcsv::Document(filepath);
 			output = new Object();
 			output->type = DataType::FILE_READER_OBJECT;
-			output->object = (void*) &doc;
+			output->object = (void*) &doc;*/
+
+			output = new Object(DataType::FILE_READER_OBJECT, (void*) new ::FileReader(filepath));
 		}
 		catch (std::exception& e)
 		{
@@ -385,11 +406,15 @@ namespace Nodes
 						}
 						try 
 						{
-							auto* doc = static_cast<rapidcsv::Document*>(in->object);
-							arr = doc->GetColumn<double>(columnName);
-							output = new Object();
-							output->type = DataType::ARRAY;
-							output->object = (void*)&arr;
+							auto* doc = static_cast<::FileReader*>(in->object);
+							arr = doc->getColumn<double>(columnName);
+							output = new Object(DataType::ARRAY, (void*) new Array(arr));
+							
+							//auto* doc = static_cast<rapidcsv::Document*>(in->object);
+							//arr = doc->GetColumn<double>(columnName);
+							//output = new Object();
+							//output->type = DataType::ARRAY;
+							//output->object = (void*)&arr;
 							return;
 						}
 						catch (std::exception e)
@@ -637,9 +662,10 @@ namespace Nodes
 		}
 
 		lr->train(rate, iter, x, y);
-		output = new Object();
-		output->type = DataType::LINEAR_REGRESSION_MODEL;
-		output->object = (void*) lr;
+		//output = new Object();
+		//output->type = DataType::LINEAR_REGRESSION_MODEL;
+		//output->object = (void*) lr;
+		output = new Object(DataType::LINEAR_REGRESSION_MODEL, (void*)lr);
 	}
 
 	void LR_Train::clean()
@@ -751,9 +777,10 @@ namespace Nodes
 		}
 
 		y = lr->predict(x);
-		output = new Object();
-		output->type = DataType::ARRAY;
-		output->object = (void*) &y;
+		output = new Object(DataType::ARRAY, (void*) new Array(y));
+		//output = new Object();
+		//output->type = DataType::ARRAY;
+		//output->object = (void*) &y;
 
 		#ifdef DEBUG
 			for (auto i : y)

@@ -3,6 +3,7 @@
 #include <string>
 #include <Window.h>
 #include <implot/implot.h>
+#include <DataTypes/Array.h>
 
 #ifdef DEBUG
 #include <Algorithms/LinearRegression.h>
@@ -29,15 +30,15 @@ NodeEditor::NodeEditor(Window* window)
 	::LinearRegression* lr = new ::LinearRegression();
 	lr->train(0.0001, 1000, x, y);
 
-	auto* o1 = new Nodes::Object(Nodes::DataType::ARRAY, (void*)&x);
+	auto* o1 = new Nodes::Object(Nodes::DataType::ARRAY, (void*) new Array(x));
 	strcpy(o1->name, "x");
 	strcpy(o1->typeSelected, "Array");
 
-	auto* o2 = new Nodes::Object(Nodes::DataType::ARRAY, (void*)&y);
+	auto* o2 = new Nodes::Object(Nodes::DataType::ARRAY, (void*) new Array(y));
 	strcpy(o2->name, "y");
 	strcpy(o2->typeSelected, "Array");
 	
-	auto* o3 = new Nodes::Object(Nodes::DataType::LINEAR_REGRESSION_MODEL, (void*)lr);
+	auto* o3 = new Nodes::Object(Nodes::DataType::LINEAR_REGRESSION_MODEL, (void*) lr);
 	strcpy(o3->name, "lr");
 	strcpy(o3->typeSelected, "Linear Regression Object");
 
@@ -194,7 +195,8 @@ void NodeEditor::renderEditor()
 
 		for (auto obj : objects)
 		{
-			switch (obj->type)
+			obj->clear();
+			/*switch (obj->type)
 			{
 			case Nodes::DataType::FILE_READER_OBJECT:
 			case Nodes::DataType::ARRAY:
@@ -203,7 +205,7 @@ void NodeEditor::renderEditor()
 				try { delete obj->object; }
 				catch (std::exception& e) {}
 				break;
-			}
+			}*/
 		}
 	}
 

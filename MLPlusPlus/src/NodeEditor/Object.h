@@ -24,5 +24,7 @@ namespace Nodes
 		Object();
 		Object(DataType type, void* object = nullptr, bool selected = false);
 		~Object();
+
+		void clear();
 	};
 }
