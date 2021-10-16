@@ -12,7 +12,15 @@ namespace Nodes
 
 	Object::~Object()
 	{
-		try							{ delete object; }
-		catch(std::exception& e)	{ }
+		switch (type)
+		{
+		case DataType::ARRAY:
+		case DataType::FILE_READER_OBJECT:
+			break;
+		default:
+			try { delete object; }
+			catch(std::exception& e) {}
+			break;
+		}
 	}
 }

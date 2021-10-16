@@ -185,7 +185,7 @@ void NodeEditor::renderEditor()
 		}
 
 		// Garabage collection
-		/*t = mainRef;
+		t = mainRef;
 		while (t != nullptr)
 		{
 			t->clean();
@@ -193,7 +193,18 @@ void NodeEditor::renderEditor()
 		}
 
 		for (auto obj : objects)
-			delete obj->object;*/
+		{
+			switch (obj->type)
+			{
+			case Nodes::DataType::FILE_READER_OBJECT:
+			case Nodes::DataType::ARRAY:
+				break;
+			default:
+				try { delete obj->object; }
+				catch (std::exception& e) {}
+				break;
+			}
+		}
 	}
 
 	// delete nodes and link
