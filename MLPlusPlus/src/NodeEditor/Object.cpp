@@ -1,6 +1,18 @@
 #include "Object.h"
 
 #include <stdexcept>
+#include <DataTypes/Array.h>
+#include <DataTypes/Bool.h>
+#include <DataTypes/FileReader.h>
+#include <DataTypes/Float.h>
+#include <DataTypes/Integer.h>
+#include <DataTypes/String.h>
+#include <Algorithms/LinearRegression.h>
+
+#define DELETE_CASE(e_type, type)			\
+	case e_type:							\
+		delete static_cast<type*>(object);	\
+		break;
 
 namespace Nodes
 {
@@ -14,13 +26,15 @@ namespace Nodes
 	{
 		switch (type)
 		{
-		case DataType::ARRAY:
-		case DataType::FILE_READER_OBJECT:
-			break;
+			DELETE_CASE(DataType::ARRAY, Array)
+			DELETE_CASE(DataType::FILE_READER_OBJECT, FileReader)
+			DELETE_CASE(DataType::BOOL, Bool)
+			DELETE_CASE(DataType::FLOAT, Float)
+			DELETE_CASE(DataType::INT, Integer)
+			DELETE_CASE(DataType::LINEAR_REGRESSION_MODEL, LinearRegression)
+			DELETE_CASE(DataType::STRING, String)
 		default:
-			try { delete object; }
-			catch(std::exception& e) {}
-			break;
+			throw std::runtime_error("Invalid data type");
 		}
 	}
 }
