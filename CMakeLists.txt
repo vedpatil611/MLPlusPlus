@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(MLPlusPlus VERSION 0.1)
 
-add_subdirectory(Dependencies/glad)
+add_subdirectory(Dependencies/GLAD)
 add_subdirectory(Dependencies/glfw)
 add_subdirectory(Dependencies/ImGui)
 
@@ -10,19 +10,20 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 if(WIN32)
-	target_compile_definitions(MLPlusPlus PUBLIC OS_WINDOWS)
+	add_compile_definitions(OS_WINDOWS)
 endif(WIN32)
 
 if(UNIX)
-	target_compile_definitions(MLPlusPlus PUBLIC OS_LINUX)
+	add_compile_definitions(OS_LINUX)
 endif(UNIX)
 
 set(self_include_dir "${PROJECT_SOURCE_DIR}/MLPlusPlus/src")
 set(glfw_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/glfw/include")
-set(glad_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/glad/include")
+set(glad_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/GLAD/include")
 set(imgui_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/ImGui/src/ImGui")
 set(imgui_filebrowser_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/imgui-filebrowser")
 set(rapidcsv_include_dir "${PROJECT_SOURCE_DIR}/Dependencies/rapidcsv/src")
+set(vendors "${PROJECT_SOURCE_DIR}/MLPlusPlus/src/vendors")
 
 file(GLOB source_files
   "${PROJECT_SOURCE_DIR}/MLPlusPlus/src/*.cpp"
@@ -43,6 +44,7 @@ file(GLOB include_files
   "${imgui_include_dir}"
   "${imgui_filebrowser_include_dir}"
   "${rapidcsv_include_dir}"
+  "${vendors}"
 )
 
 add_executable(MLPlusPlus "${source_files}")
